@@ -7,7 +7,7 @@
 A rule based custom proxy for <strong>Koolshare OpenWrt/LEDE x64</strong> based on <a href="https://github.com/Dreamacro/clash" target="_blank">Clash</a>.
 <br>
 <a href="https://koolclash.js.org">Documentation(zh-Hans)</a> |
-<a href="https://github.com/SukkaW/Koolshare-Clash.git">From</a> |
+<a href="https://github.com/SukkaW/Koolshare-Clash.git">From SukkaW</a> |
 <a href="https://github.com/houzi-/Koolshare-Clash-hack/releases">Download</a> 
 </p>
 
