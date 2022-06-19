@@ -93,7 +93,7 @@ KoolClash is not responsible for any loss of any user, including but not limited
 
 ## Sponsors
 
-[![tshl](https://raw.githubusercontent.com/houzi-/Koolshare-Clash-hack/main/adv.png)]([https://dlercloud.com](https://tshl.ru/))
+[![tshl](https://raw.githubusercontent.com/houzi-/Koolshare-Clash-hack/main/adv.png)width="130px" height="25px"]([https://dlercloud.com](https://tshl.ru/))
 
 ## Maintainer
 
