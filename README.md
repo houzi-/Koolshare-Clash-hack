@@ -63,12 +63,9 @@ Read the [detailed installation instructions (written in Chinese)](https://koolc
 ## Build
 
 ```bash
-$ git clone https://github.com/SukkaW/Koolshare-Clash.git
-$ cd Koolshare-Clash
-$ ./build # Get usage information
-$ ./build pack # Build the package
-$ ./build ipdb # Update Country.mmdb to latest
-$ ./build dashboard # Update clash-dashboard to latest
+$ git clone https://github.com/houzi-/Koolshare-Clash-hack.git
+$ cd Koolshare-Clash-hack
+$ ./build # Package installation package
 ```
 
 ## Clash on Other Platforms
