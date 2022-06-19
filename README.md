@@ -1,6 +1,7 @@
 <h1 align="center">
     <img src="https://koolclash.js.org/img/koolclash.png" alt="Clash" width="120">
     <br>KoolClash
+    <br> Fork https://github.com/SukkaW/Koolshare-Clash.git
 </h1>
 
 <p align="center">
