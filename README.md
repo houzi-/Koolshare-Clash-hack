@@ -77,13 +77,13 @@ $ ./build # Package installation package
 
 ## Contributions
 
-[Report a Bug](https://github.com/SukkaW/Koolshare-Clash/issues/new/choose) | [Improve Documentations](https://github.com/SukkaW/Koolshare-Clash/tree/master/docs) | [Fork & Open a New PR](https://github.com/SukkaW/Koolshare-Clash/fork)
+[Report a Bug](https://github.com/houzi-/Koolshare-Clash-hack/issues/new/choose) | [Improve Documentations](https://github.com/SukkaW/Koolshare-Clash/tree/master/docs) | [Fork & Open a New PR](https://github.com/houzi-/Koolshare-Clash-hack/fork)
 
 All kinds of contributions (enhancements, new features, documentation & code improvements, issues & bugs reporting) are welcome.
 
 ## License
 
-KoolClash is released under the GPL-3.0 License - see the [LICENSE](https://github.com/SukkaW/Koolshare-Clash/blob/master/LICENSE) file for details.
+KoolClash is released under the GPL-3.0 License - see the [LICENSE](https://github.com/houzi-/Koolshare-Clash-hack/blob/main/LICENSE) file for details.
 
 Also, this project includes [GeoLite2](https://dev.maxmind.com/geoip/geoip2/geolite2/) data created by [MaxMind](https://www.maxmind.com).
 
@@ -97,7 +97,8 @@ KoolClash is not responsible for any loss of any user, including but not limited
 
 ## Maintainer
 
-**KoolClash** © [Sukka](https://github.com/SukkaW), Released under the [GPL-3.0]([./LICENSE](https://github.com/SukkaW/Koolshare-Clash/blob/master/LICENSE)) License.<br>
+**KoolClash** © [Sukka](https://github.com/SukkaW), Released under the [GPL-3.0]([./LICENSE](https://github.com/houzi-/Koolshare-Clash-hack/blob/main/LICENSE)) License.<br>
 Authored and maintained by [Sukka](https://github.com/SukkaW) with help from contributors ([list](https://github.com/SukkaW/Koolshare-Clash/contributors)).
+Hacker by [houzi-](https://github.com/houzi-) with help from contributors ([list](https://github.com/houzi-/Koolshare-Clash-hack/contributors)).
 
 > [Personal Website](https://skk.moe) · [Blog](https://blog.skk.moe) · GitHub [@SukkaW](https://github.com/SukkaW) · Telegram Channel [@SukkaChannel](https://t.me/SukkaChannel) · Twitter [@isukkaw](https://twitter.com/isukkaw) · Keybase [@sukka](https://keybase.io/sukka)
