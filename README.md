@@ -38,7 +38,7 @@ A rule based custom proxy for <strong>Koolshare OpenWrt/LEDE x64</strong> based 
 ## Keywords
 
 - [Clash](https://github.com/Dreamacro/clash) : A multi-platform & rule-base tunnel
-- **[KoolClash](https://koolclash.js.org) : This project, a rule based custom proxy for [Koolshare OpenWrt/LEDE x64](http://koolshare.cn/forum-97-1.html) based on Clash.**
+- **[KoolClash](https://koolclash.js.org) : This project, a rule based custom proxy for [Koolshare OpenWrt/LEDE x64](https://www.koolcenter.com/) based on Clash.**
 
 ## Features
 
@@ -50,7 +50,7 @@ A rule based custom proxy for <strong>Koolshare OpenWrt/LEDE x64</strong> based 
 
 Besides those features that Clash have, KoolClash has more:
 
-- Install clash and upload config to [Koolshare OpenWrt/LEDE X86](https://firmware.koolshare.cn/LEDE_X64_fw867/)
+- Install clash and upload config to [Koolshare OpenWrt/LEDE X86](http://fw.koolcenter.com/LEDE_X64_fw867/)
 - ~~Transparent proxy for all of your devices~~
 - Proxy gateway like Surge Enhanced Mode 
 
