@@ -100,7 +100,7 @@ KoolClash is not responsible for any loss of any user, including but not limited
 **KoolClash** © [Sukka](https://github.com/SukkaW), Released under the [GPL-3.0]([./LICENSE](https://github.com/houzi-/Koolshare-Clash-hack/blob/main/LICENSE)) License.<br>
 Authored and maintained by [Sukka](https://github.com/SukkaW) with help from contributors ([list](https://github.com/SukkaW/Koolshare-Clash/contributors)).
 
+> [Personal Website](https://skk.moe) · [Blog](https://blog.skk.moe) · GitHub [@SukkaW](https://github.com/SukkaW) · Telegram Channel [@SukkaChannel](https://t.me/SukkaChannel) · Twitter [@isukkaw](https://twitter.com/isukkaw) · Keybase [@sukka](https://keybase.io/sukka)
+
 **KoolClash-hack** © [houzi-](https://github.com/houzi-), Released under the [GPL-3.0]([./LICENSE](https://github.com/houzi-/Koolshare-Clash-hack/blob/main/LICENSE)) License.<br>
 Hacker by [houzi-](https://github.com/houzi-) with help from contributors ([list](https://github.com/houzi-/Koolshare-Clash-hack/contributors)).
-
-> [Personal Website](https://skk.moe) · [Blog](https://blog.skk.moe) · GitHub [@SukkaW](https://github.com/SukkaW) · Telegram Channel [@SukkaChannel](https://t.me/SukkaChannel) · Twitter [@isukkaw](https://twitter.com/isukkaw) · Keybase [@sukka](https://keybase.io/sukka)
