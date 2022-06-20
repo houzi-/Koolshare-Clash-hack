@@ -56,7 +56,7 @@ Besides those features that Clash have, KoolClash has more:
 
 ## Installation
 
-Download latest `koolshare.tar.gz` from [GitHub Release](https://github.com/houzi-/Koolshare-Clash-hac/releases), and then upload to Koolshare OpenWrt/LEDE Soft Center as offline installation.
+Download latest `koolshare.tar.gz` from [GitHub Release](https://github.com/houzi-/Koolshare-Clash-hack/releases), and then upload to Koolshare OpenWrt/LEDE Soft Center as offline installation.
 
 Read the [detailed installation instructions (written in Chinese)](https://koolclash.js.org/#/install) for more details.
 
