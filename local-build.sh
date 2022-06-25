@@ -20,6 +20,10 @@ cat > ./version <<EOF
 $VERSION
 $md5value
 EOF
+
+cat > ./koolclash_version <<EOF
+$VERSION
+EOF
 cat version
 
 DATE=`date +%Y-%m-%d_%H:%M:%S`
