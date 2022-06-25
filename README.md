@@ -15,8 +15,8 @@ A rule based custom proxy for <strong>Koolshare OpenWrt/LEDE x64</strong> based 
     <!--<a href="https://travis-ci.org/SukkaW/KoolShare-Clash">
         <img src="https://img.shields.io/travis/SukkaW/KoolShare-Clash.svg?style=flat-square" alt="Travis-CI">
     </a>-->
-    <a href="https://github.com/SukkaW/Koolshare-Clash/releases" target="_blank">
-        <img src="https://img.shields.io/github/release/SukkaW/Koolshare-Clash/all.svg?style=flat-square">
+    <a href="https://github.com/houzi-/Koolshare-Clash-hack/releases" target="_blank">
+        <img src="https://img.shields.io/github/release/houzi-/Koolshare-Clash-hack/all.svg?style=flat-square">
     </a>
     <a href="https://github.com/Dreamacro/clash" target="_blank">
         <img src="https://img.shields.io/github/release/Dreamacro/clash/all.svg?style=flat-square"/>
