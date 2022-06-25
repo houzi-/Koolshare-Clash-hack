@@ -13,6 +13,10 @@ white)
     dbus set koolclash_firewall_whiteip_base64=$3
     http_response 'ok'
     ;;
+white-domain)
+    dbus set koolclash_firewall_whitedomain_base64=$3
+    http_response 'ok'
+    ;;
 default)
 #    # 0 不通过 Clash; 1 通过 Clash
 #    dbus set koolclash_firewall_default_mode=$3

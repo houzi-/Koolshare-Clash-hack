@@ -85,8 +85,9 @@ if [ ! -f $KSROOT/koolclash/config/Country.mmdb ]; then
 	cp -rf /tmp/koolclash/koolclash/config/GeoSite.dat $KSROOT/koolclash/config/GeoSite.dat
 	cp -rf /tmp/koolclash/koolclash/config/dns.yml $KSROOT/koolclash/config/dns.yml
 	cp -rf /tmp/koolclash/koolclash/config/china_ip_route.ipset $KSROOT/koolclash/config/china_ip_route.ipset
+	cp -rf /tmp/koolclash/koolclash/config/profile.yml $KSROOT/koolclash/config/profile.yml	
     dbus set koolclash_ipdb_version=$IPDB_VERSION
-    dbus set koolclash_chn_version=$CHN_VERSION	
+    dbus set koolclash_chn_version=$IPDB_VERSION	
 fi
 
 # 删除 Luci 缓存

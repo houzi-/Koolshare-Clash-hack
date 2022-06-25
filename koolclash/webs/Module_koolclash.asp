@@ -175,6 +175,30 @@
             background: #D7D7D7
         }
 
+		.radio-button {
+			display: none;
+			white-space: nowrap;
+			background-color: #d1d1d1;
+			border-radius: 4px;
+		}
+
+		.radio-button input[type="radio"] {
+			display: none;
+		}	
+   
+		.radio-button label {
+			display: inline-block;
+			font-size: 14px;
+			padding: 4px 5px;
+			color: white;
+			cursor: pointer;
+			border-radius: 4px;
+		}
+
+		.radio-button input[type="radio"]:checked+label {
+			background-color: #1080c1;
+		}
+
         /*#koolclash-acl-default-panel {
             margin-top: 16px;
         }*/
@@ -199,7 +223,7 @@
                 <p style="margin-top: 4px">Clash 是一个基于规则的代理程序，兼容 Shadowsocks、Vmess 等协议，拥有像 Surge 一样强大的代理规则。</p>
                 <p>KoolClash 是 Clash 在 Koolshare OpenWrt 上的客户端。</p>
 
-                <p style="margin-top: 12px"><a href="https://github.com/Dreamacro/clash">Clash on GitHub</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://koolclash.js.org" target="_blank">KoolClash 使用文档</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://github.com/SukkaW/Koolshare-Clash/releases" target="_blank">KoolClash 更新日志</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://github.com/SukkaW/Koolshare-Clash" target="_blank">KoolClash on GitHub</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://telegram.clash.dev" target="_blank">Telrgram</a></p>
+                <p style="margin-top: 12px"><a href="https://github.com/Dreamacro/clash">Clash on GitHub</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://koolclash.js.org" target="_blank">KoolClash 使用文档</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://github.com/houzi-/Koolshare-Clash-hack/releases" target="_blank">KoolClash 更新日志</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://github.com/houzi-/Koolshare-Clash-hack" target="_blank">KoolClash on GitHub</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://telegram.clash.dev" target="_blank">Telrgram</a></p>
 
             </div>
         </div>
@@ -361,6 +385,15 @@
                     </div>
                 </div>
             </div>
+            <div class="box">
+                <div class="heading" style="margin-top: -15px;"></div>
+                <div class="content">
+                    <div id="koolclash-firewall-ipset-domain"></div>
+                    <div class="koolclash-btn-container">
+                        <button type="button" id="koolclash-btn-submit-white-domain" onclick="KoolClash.acl.submitWhiteDOMAIN();" class="btn btn-primary">提交</button>
+                    </div>
+                </div>
+            </div>			
         </div>
         <div id="koolclash-content-log">
             <div class="box">
@@ -544,7 +577,7 @@
                     {
                         title: '<b>Clash 进程状态</b>',
                         text: '<span id="koolclash_status" name="koolclash_status" color="#1bbf35">正在获取 Clash 进程状态...</span>'
-                    },
+                    },					
                     {
                         title: '<b>Clash 看门狗进程状态</b>',
                         text: '<span id="koolclash_watchdog_status" name="koolclash_watchdog_status" color="#1bbf35">正在获取 Clash 看门狗进程状态...</span>'
@@ -610,7 +643,15 @@
                         style: 'width: 80%; height: 150px;'
                     },
                 ]);
-
+                $('#koolclash-firewall-ipset-domain').forms([
+                    {
+                        title: '<b>域名白名单</b><br><br><p style="color: #999">不通过 Clash 的域名外网地址，一行一个，例如：<br>google.com<br>facebook.com</p>',
+                        name: 'koolclash_firewall_white_ipset_domain',
+                        type: 'textarea',
+                        value: Base64.decode(window.dbus.koolclash_firewall_whitedomain_base64 || '') || '',
+                        style: 'width: 80%; height: 150px;'
+                    },
+                ]);
                 $('#koolclash-watchdog-panel').forms([
                     {
                         title: 'Clash 看门狗开关',
@@ -677,13 +718,13 @@
                         $.ajax({
                             type: "GET",
                             cache: false,
-                            url: "https://koolclash.js.org/koolclash_version",
+                            url: "https://raw.githubusercontent.com/houzi-/Koolshare-Clash-hack/main/koolclash_version",
                             success: (resp) => {
                                 remote = resp;
                                 E('koolclash-version-msg').innerHTML = `当前安装版本&nbsp;:&nbsp;${installed}&nbsp;&nbsp;/&nbsp;&nbsp;最新发布版本&nbsp;:&nbsp;${remote}`;
 
                                 if (installed !== remote) {
-                                    E('koolclash-version-msg').innerHTML = `当前安装版本&nbsp;:&nbsp;${installed}&nbsp;&nbsp;|&nbsp;&nbsp;最新发布版本&nbsp;:&nbsp;${remote}<br>发现「当前安装版本」与「最新发布版本」版本号不同，可能是 KoolClash 有新版本发布，请前往 <a href="https://github.com/SukkaW/Koolshare-Clash/releases" target="_blank" style="padding: 0; color: navy">GitHub Release</a> 查看更新日志`;
+                                    E('koolclash-version-msg').innerHTML = `当前安装版本&nbsp;:&nbsp;${installed}&nbsp;&nbsp;|&nbsp;&nbsp;最新发布版本&nbsp;:&nbsp;${remote}<br>发现「当前安装版本」与「最新发布版本」版本号不同，可能是 KoolClash 有新版本发布，请前往 <a href="https://github.com/houzi-/Koolshare-Clash-hack/releases" target="_blank" style="padding: 0; color: navy">GitHub Release</a> 查看更新日志`;
                                 }
                             }
                         });
@@ -1493,6 +1534,41 @@ ${Base64.decode(data.firewall_white_ip)}
                         }
                     });
                 },
+                submitWhiteDOMAIN: () => {
+                    KoolClash.disableAllButton();
+                    let data = Base64.encode(E('_koolclash_firewall_white_ipset_domain').value);
+
+                    E('koolclash-btn-submit-white-domain').innerHTML = `正在提交`;
+                    let id = parseInt(Math.random() * 100000000),
+                        postData = JSON.stringify({
+                            id,
+                            "method": "koolclash_firewall.sh",
+                            "params": ['white-domain', `${data}`],
+                            "fields": ""
+                        });
+
+                    $.ajax({
+                        type: "POST",
+                        cache: false,
+                        url: "/_api/",
+                        data: postData,
+                        dataType: "json",
+                        success: (resp) => {
+                            E('koolclash-btn-submit-white-domain').innerHTML = `提交成功，下次启动 Clash 时生效！`;
+                            setTimeout(() => {
+                                KoolClash.enableAllButton();
+                                E('koolclash-btn-submit-white-domain').innerHTML = '提交';
+                            }, 2500)
+                        },
+                        error: () => {
+                            E('koolclash-btn-submit-white-domain').innerHTML = `提交失败，请重试！`;
+                            setTimeout(() => {
+                                KoolClash.enableAllButton();
+                                E('koolclash-btn-submit-white-domain').innerHTML = '提交';
+                            }, 2500)
+                        }
+                    });
+                },				
             },
             submitWatchdog: () => {
                 KoolClash.disableAllButton();

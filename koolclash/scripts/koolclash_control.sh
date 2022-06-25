@@ -214,6 +214,17 @@ EOF
             ipset -! add koolclash_white $ip >/dev/null 2>&1
         done
     fi
+
+    if [ ! -z $koolclash_firewall_whitedomain_base64 ]; then
+        ip_white_domain=$(echo $koolclash_firewall_whitedomain_base64 | base64_decode)
+        echo_date '应用外网目标域名白名单'
+		echo "#for koolclash white_domain" >> /tmp/dnsmasq.d/koolclash_ipset.conf
+        for domain in $ip_white_domain; do
+			echo "$domain" | sed "s/^/ipset=&\/./g" | sed "s/$/\/koolclash_white/g" >> /tmp/dnsmasq.d/koolclash_ipset.conf
+        done
+	else
+		rm -rf /tmp/dnsmasq.d/koolclash_ipset.conf >/dev/null 2>&1
+    fi
 }
 
 #--------------------------------------------------------------------------

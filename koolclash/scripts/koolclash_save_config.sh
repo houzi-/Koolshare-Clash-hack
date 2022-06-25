@@ -73,6 +73,7 @@ if [ $(yq r $KSROOT/koolclash/config/config.yaml dns.enable) == 'true' ] && [[ $
         echo_date "将提交的自定义 DNS 设置覆盖 Clash 配置文件..."
         # 将后备 DNS 配置以覆盖的方式与 config.yaml 合并
         yq m -x -i $KSROOT/koolclash/config/config.yaml $KSROOT/koolclash/config/dns.yml
+        yq m -x -i $KSROOT/koolclash/config/config.yaml $KSROOT/koolclash/config/profile.yml		
 
         dbus set koolclash_dnsmode=2
     else
@@ -98,6 +99,7 @@ else
         echo_date "删除 Clash 配置文件中原有的 DNS 配置"
         yq d -i $KSROOT/koolclash/config/config.yaml dns
         yq m -x -i $KSROOT/koolclash/config/config.yaml $KSROOT/koolclash/config/dns.yml
+        yq m -x -i $KSROOT/koolclash/config/config.yaml $KSROOT/koolclash/config/profile.yml		
 
         overwrite_dns_config
 
