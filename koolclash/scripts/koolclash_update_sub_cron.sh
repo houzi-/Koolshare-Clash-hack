@@ -67,6 +67,8 @@ update)
         #$curl -L "$sub_url" -o $KSROOT/koolclash/config/origin.yml
 		$KSROOT/scripts/koolclash_update_yaml.sh
 		$KSROOT/koolclash/config/sub.sh
+		sub_time=$(ls --full-time $KSROOT/koolclash/config/config.yaml | awk '{print $6,$7}')
+		dbus set koolclash_config_version="<font color="#1bbf35">$sub_time</font>"
         sed -i '/^\-\-\-$/ d' $KSROOT/koolclash/config/origin.yml
         sed -i '/^\.\.\.$/ d' $KSROOT/koolclash/config/origin.yml
     else

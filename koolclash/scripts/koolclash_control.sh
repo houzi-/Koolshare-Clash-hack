@@ -218,12 +218,18 @@ EOF
     if [ ! -z $koolclash_firewall_whitedomain_base64 ]; then
         ip_white_domain=$(echo $koolclash_firewall_whitedomain_base64 | base64_decode)
         echo_date '应用外网目标域名白名单'
+		ISP_DNS=$(ubus call network.interface.wan status | jsonfilter -e '@["dns-server"][0]')
+		rm -rf /tmp/dnsmasq.d/koolclash_ipset.conf >/dev/null 2>&1
+		rm -rf /tmp/dnsmasq.d/koolclash_white_server.conf >/dev/null 2>&1
 		echo "#for koolclash white_domain" >> /tmp/dnsmasq.d/koolclash_ipset.conf
+		echo "#for koolclash white_domain_server" >> /tmp/dnsmasq.d/koolclash_white_server.conf
         for domain in $ip_white_domain; do
 			echo "$domain" | sed "s/^/ipset=&\/./g" | sed "s/$/\/koolclash_white/g" >> /tmp/dnsmasq.d/koolclash_ipset.conf
+			echo "$domain" | sed "s/^/server=&\//g" | sed "s/$/\/$ISP_DNS/g" >> /tmp/dnsmasq.d/koolclash_white_server.conf
         done
 	else
 		rm -rf /tmp/dnsmasq.d/koolclash_ipset.conf >/dev/null 2>&1
+		rm -rf /tmp/dnsmasq.d/koolclash_white_server.conf >/dev/null 2>&1
     fi
 }
 

@@ -37,6 +37,8 @@ overwrite_dns_config() {
 case $2 in
 del)
     dbus remove koolclash_suburl
+	CRONTAB_SUB=$(cat /etc/crontabs/root | grep koolclash_update_sub_cron.sh)
+	[ ! -z "$CRONTAB_SUB" ] && echo_date "删除定时更新 Clash 配置文件CRON..." && sed -i '/koolclash_update_sub_cron/d' /etc/crontabs/root >/dev/null 2>&1
     http_response 'ok'
     ;;
 
@@ -58,6 +60,8 @@ update)
             #$curl -L "$sub_url" -o $KSROOT/koolclash/config/origin.yml
 			$KSROOT/scripts/koolclash_update_yaml.sh
 			$KSROOT/koolclash/config/sub.sh
+			sub_time=$(ls --full-time $KSROOT/koolclash/config/config.yaml | awk '{print $6,$7}')
+			dbus set koolclash_config_version="<font color="#1bbf35">$sub_time</font>"
             sed -i '/^\-\-\-$/ d' $KSROOT/koolclash/config/origin.yml
             sed -i '/^\.\.\.$/ d' $KSROOT/koolclash/config/origin.yml
         else

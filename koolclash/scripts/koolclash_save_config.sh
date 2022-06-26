@@ -18,6 +18,8 @@ if [ -f /tmp/upload/clash.config.yaml ]; then
     mkdir -p $KSROOT/koolclash/config/
     # 将上传的文件复制到 Config 目录中
     cp /tmp/upload/clash.config.yaml $KSROOT/koolclash/config/origin.yml
+	sub_time=$(ls --full-time $KSROOT/koolclash/config/config.yaml | awk '{print $6,$7}')
+	dbus set koolclash_config_version="<font color="#1bbf35">$sub_time</font>"	
 else
     echo_date "没有找到上传的配置文件！退出！"
     http_response 'notfound'
