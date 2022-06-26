@@ -607,6 +607,11 @@
                     {
                         title: '<b>Clash 配置导出</b>',
                         suffix: '<button id="koolclash-btn-download" type="button" onclick="KoolClash.downloadClashConfig();" class="btn btn-primary">导出配置文件</button>'
+                    },
+                    {
+                        title: '<b>Clash 配置文件更新时间</b>',
+                        name: 'koolclash-config-version',
+                        text: `${window.dbus.koolclash_config_version || '<font color="#e85600">没有获取到更新时间</font>'}`
                     },					
                     {
                         title: '<b>Clash 托管配置 URL</b><br><small>请注意！务必谨慎使用该功能！</small>',
