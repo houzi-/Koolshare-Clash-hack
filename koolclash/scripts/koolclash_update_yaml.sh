@@ -11,7 +11,9 @@ rm -rf $KSROOT/koolclash/config/sub.sh > /dev/null 2>&1
 echo -e "
 #!/bin/sh
 curl=\$(which curl)
-\$curl -L ${sub_url} -o ${KSROOT}/koolclash/config/origin.yml" >> $KSROOT/koolclash/config/sub.sh
+\$curl -L ${sub_url} -o ${KSROOT}/koolclash/config/origin.yml
+sub_time=\$(date +%Y-%m-%d\ %X)
+dbus set koolclash_config_version=\"<font color="#1bbf35">\$sub_time</font>\"" >> $KSROOT/koolclash/config/sub.sh
 
 sed -i '/^$/d' $KSROOT/koolclash/config/sub.sh
 chmod -R 755 $KSROOT/koolclash/config/sub.sh
