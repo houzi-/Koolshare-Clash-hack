@@ -18,6 +18,7 @@ if [ ! -f $KSROOT/koolclash/config/config.yaml ]; then
     clash_allow_lan=''
     clash_ext_controller=''
     clash_redir=''
+	clash_mode=''
     clash_dns_enable=''
     clash_dns_ipv6=''
     clash_dns_mode=''
@@ -26,6 +27,7 @@ else
     clash_allow_lan=$(yq r /koolshare/koolclash/config/config.yaml allow-lan)
     clash_ext_controller=$(yq r /koolshare/koolclash/config/config.yaml external-controller)
     clash_redir=$(yq r /koolshare/koolclash/config/config.yaml redir-port)
+	clash_mode=$(yq r /koolshare/koolclash/config/config.yaml mode)
     clash_dns_enable=$(yq r /koolshare/koolclash/config/config.yaml dns.enable)
     clash_dns_ipv6=$(yq r /koolshare/koolclash/config/config.yaml dns.ipv6)
     clash_dns_mode=$(yq r /koolshare/koolclash/config/config.yaml dns.enhanced-mode)
@@ -47,4 +49,4 @@ clash_process=$(ps | grep clash | grep -v grep | base64 | xargs)
 
 clash_config_dir=$(ls -lh /koolshare/koolclash/config | base64 | xargs)
 
-http_response "{ \\\"lan_ip\\\": \\\"${lan_ip}\\\", \\\"koolshare_version\\\": \\\"$koolshare_version\\\", \\\"clash_allow_lan\\\": \\\"$clash_allow_lan\\\", \\\"clash_ext_controller\\\": \\\"$clash_ext_controller\\\", \\\"clash_dns_enable\\\": \\\"$clash_dns_enable\\\", \\\"clash_dns_ipv6\\\": \\\"$clash_dns_ipv6\\\", \\\"clash_dns_mode\\\": \\\"$clash_dns_mode\\\", \\\"clash_dns_listen\\\": \\\"$clash_dns_listen\\\", \\\"fallbackdns\\\": \\\"$fallbackdns\\\", \\\"iptables_mangle\\\": \\\"$iptables_mangle\\\", \\\"iptables_nat\\\": \\\"$iptables_nat\\\", \\\"iptables_mangle_clash\\\": \\\"$iptables_mangle_clash\\\", \\\"iptables_nat_clash\\\": \\\"$iptables_nat_clash\\\", \\\"iptables_mangle_clash_dns\\\": \\\"$iptables_mangle_clash_dns\\\", \\\"iptables_nat_clash_dns\\\": \\\"$iptables_nat_clash_dns\\\", \\\"clash_redir\\\": \\\"$clash_redir\\\", \\\"firewall_white_ip\\\": \\\"$white_ip\\\", \\\"chromecast_nu\\\": \\\"$chromecast_nu\\\", \\\"clash_process\\\": \\\"$clash_process\\\", \\\"clash_config_dir\\\": \\\"$clash_config_dir\\\", \\\"clash_version\\\": \\\"$clash_version\\\"}"
+http_response "{ \\\"lan_ip\\\": \\\"${lan_ip}\\\", \\\"koolshare_version\\\": \\\"$koolshare_version\\\", \\\"clash_allow_lan\\\": \\\"$clash_allow_lan\\\", \\\"clash_ext_controller\\\": \\\"$clash_ext_controller\\\", \\\"clash_dns_enable\\\": \\\"$clash_dns_enable\\\", \\\"clash_dns_ipv6\\\": \\\"$clash_dns_ipv6\\\", \\\"clash_dns_mode\\\": \\\"$clash_dns_mode\\\", \\\"clash_dns_listen\\\": \\\"$clash_dns_listen\\\", \\\"fallbackdns\\\": \\\"$fallbackdns\\\", \\\"iptables_mangle\\\": \\\"$iptables_mangle\\\", \\\"iptables_nat\\\": \\\"$iptables_nat\\\", \\\"iptables_mangle_clash\\\": \\\"$iptables_mangle_clash\\\", \\\"iptables_nat_clash\\\": \\\"$iptables_nat_clash\\\", \\\"iptables_mangle_clash_dns\\\": \\\"$iptables_mangle_clash_dns\\\", \\\"iptables_nat_clash_dns\\\": \\\"$iptables_nat_clash_dns\\\", \\\"clash_redir\\\": \\\"$clash_redir\\\", \\\"clash_mode\\\": \\\"$clash_mode\\\", \\\"firewall_white_ip\\\": \\\"$white_ip\\\", \\\"chromecast_nu\\\": \\\"$chromecast_nu\\\", \\\"clash_process\\\": \\\"$clash_process\\\", \\\"clash_config_dir\\\": \\\"$clash_config_dir\\\", \\\"clash_version\\\": \\\"$clash_version\\\"}"

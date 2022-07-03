@@ -102,6 +102,8 @@ chmod 755 $KSROOT/init.d/S99koolclash.sh
 local_version=$(cat $KSROOT/webs/res/koolclash_.version)
 echo_date "KoolClash: 设置版本号为 $local_version..."
 dbus set koolclash_version=$local_version
+echo_date "KoolClash: 设置代理模式为 规则模式..."
+dbus set koolclash_switch_config_mode=1
 
 sleep 1
 

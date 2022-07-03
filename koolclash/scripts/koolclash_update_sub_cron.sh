@@ -89,6 +89,15 @@ update)
         yq w -i $KSROOT/koolclash/config/origin.yml external-controller "$ext_control_ip:6170"
         # 启用 external-ui
         yq w -i $KSROOT/koolclash/config/origin.yml external-ui "/koolshare/webs/koolclash/"
+		
+		# Change proxy mode
+		if [ "$koolclash_switch_config_mode" == "1" ]; then
+			yq w -i $KSROOT/koolclash/config/origin.yml mode "rule"
+		elif [ "$koolclash_switch_config_mode" == "2" ]; then
+			yq w -i $KSROOT/koolclash/config/origin.yml mode "global"
+		elif [ "$koolclash_switch_config_mode" == "3" ]; then
+			yq w -i $KSROOT/koolclash/config/origin.yml mode "direct"
+		fi		
 
         cp $KSROOT/koolclash/config/origin.yml $KSROOT/koolclash/config/config.yaml
 
@@ -102,6 +111,7 @@ update)
                 echo_date "将提交的自定义 DNS 设置覆盖 Clash 配置文件..."
                 # 将后备 DNS 配置以覆盖的方式与 config.yaml 合并
                 yq m -x -i $KSROOT/koolclash/config/config.yaml $KSROOT/koolclash/config/dns.yml
+				yq m -x -i $KSROOT/koolclash/config/config.yaml $KSROOT/koolclash/config/profile.yml
                 dbus set koolclash_dnsmode=2
             else
                 # 可能 dnsmode 是 2 但是没有自定义 DNS 配置；或者本来之前就是 1
@@ -127,6 +137,7 @@ update)
                 echo_date "删除 Clash 配置文件中原有的 DNS 配置"
                 yq d -i $KSROOT/koolclash/config/config.yaml dns
                 yq m -x -i $KSROOT/koolclash/config/config.yaml $KSROOT/koolclash/config/dns.yml
+				yq m -x -i $KSROOT/koolclash/config/config.yaml $KSROOT/koolclash/config/profile.yml
 
                 overwrite_dns_config
 

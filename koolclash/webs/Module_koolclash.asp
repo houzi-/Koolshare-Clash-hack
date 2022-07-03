@@ -189,7 +189,7 @@
 		.radio-button label {
 			display: inline-block;
 			font-size: 14px;
-			padding: 4px 5px;
+			padding: 8px 16px;
 			color: white;
 			cursor: pointer;
 			border-radius: 4px;
@@ -499,10 +499,10 @@
 					.then(resp => E('ip-ipipnet').innerHTML = resp.data.full_ip + ' ' + resp.data.city + ' ' + resp.data.distinct + ' ' + resp.data.net_str);
                     //.then(resp => E('ip-ipipnet').innerHTML = resp.data.replace('当前 IP：', '').replace('来自于：', ''));
             },
-            getSohuIP: (data) => {
-                E('ip-sohu').innerHTML = returnCitySN.cip;
-                IP.parseIPIpip(returnCitySN.cip, 'ip-sohu-ipip');
-            },
+            //getSohuIP: (data) => {
+                //E('ip-sohu').innerHTML = returnCitySN.cip;
+                //IP.parseIPIpip(returnCitySN.cip, 'ip-sohu-ipip');
+            //},
             //getIpsbIP: (data) => {
                 //E('ip-ipsb').innerHTML = data.address;
                 //E('ip-ipsb-geo').innerHTML = `${data.country} ${data.province} ${data.city} ${data.isp.name}`
@@ -577,7 +577,12 @@
                     {
                         title: '<b>Clash 进程状态</b>',
                         text: '<span id="koolclash_status" name="koolclash_status" color="#1bbf35">正在获取 Clash 进程状态...</span>'
-                    },					
+                    },
+                    {
+                        title: '<b>代理模式</b>',
+						name: 'koolclash_switch_rule_mode',
+						suffix: '<span id="radio-mode" class="radio-button" style="display: inline-block;"><input type="radio" id="rule" name="radios" onclick="KoolClash.switchConfigRule();" size="0"><label for="rule">规则</label><input type="radio" id="global" name="radios" onclick="KoolClash.switchConfigGlobal();" size="0"><label for="global">全局</label><input type="radio" id="direct" name="radios" onclick="KoolClash.switchConfigDirect();" size="0"><label for="direct">直连</label></span>',
+                    },
                     {
                         title: '<b>Clash 看门狗进程状态</b>',
                         text: '<span id="koolclash_watchdog_status" name="koolclash_watchdog_status" color="#1bbf35">正在获取 Clash 看门狗进程状态...</span>'
@@ -866,6 +871,78 @@ dns:
                     i.removeAttribute('disabled');
                 }
             },
+			switchConfigRule: () => {			
+                let id = parseInt(Math.random() * 100000000);
+                let postData = JSON.stringify({
+                    id,
+                    "method": "koolclash_switch_rule.sh",
+                    "params": [],
+                    "fields": ""
+                });
+				
+				$.ajax({
+					type: "POST",
+					cache: false,
+					url: "/_api/",
+					async: true,
+					data: postData,
+					dataType: "json",
+					success: (resp) => {
+						if (resp.result === 'rule') {
+							$('#rule').attr('checked', '');
+							alert("提交成功，下次启动 Clash 时生效！");
+						}
+					},
+				});	
+			},
+			switchConfigGlobal: () => {			
+                let id = parseInt(Math.random() * 100000000);
+                let postData = JSON.stringify({
+                    id,
+                    "method": "koolclash_switch_global.sh",
+                    "params": [],
+                    "fields": ""
+                });
+				
+				$.ajax({
+					type: "POST",
+					cache: false,
+					url: "/_api/",
+					async: true,
+					data: postData,
+					dataType: "json",
+					success: (resp) => {
+						if (resp.result === 'global') {
+							$('#global').attr('checked', '');
+							alert("提交成功，下次启动 Clash 时生效！");							
+						}
+					},
+				});	
+			},
+			switchConfigDirect: () => {			
+                let id = parseInt(Math.random() * 100000000);
+                let postData = JSON.stringify({
+                    id,
+                    "method": "koolclash_switch_direct.sh",
+                    "params": [],
+                    "fields": ""
+                });
+				
+				$.ajax({
+					type: "POST",
+					cache: false,
+					url: "/_api/",
+					async: true,
+					data: postData,
+					dataType: "json",
+					success: (resp) => {
+						if (resp.result === 'direct') {
+							$('#direct').attr('checked', '');
+							alert("提交成功，下次启动 Clash 时生效！");							
+						}
+					},
+				});	
+			},			
             submitExternalControl: () => {
                 KoolClash.disableAllButton();
 
@@ -1465,6 +1542,7 @@ ${Base64.decode(data.clash_process)}
 ------------------------ Clash 配置文件目录 ------------------------
 ${Base64.decode(data.clash_config_dir)}
 ------------------------ Clash 配置文件信息 ------------------------
+Clash 代理模式：${data.clash_mode}
 Clash 透明代理端口：${data.clash_redir}
 Clash 是否允许局域网连接：${data.clash_allow_lan}
 Clash 外部控制监听地址：${data.clash_ext_controller}
@@ -1670,6 +1748,15 @@ ${Base64.decode(data.firewall_white_ip)}
                     .then((res) => {
                         KoolClash.getClashStatus();
                         KoolClash.checkUpdate();
+						if (window.dbus.koolclash_switch_config_mode === '1') {
+							$('#rule').attr('checked', '');
+						} 
+						if (window.dbus.koolclash_switch_config_mode === '2') {
+							$('#global').attr('checked', '');							
+						}
+						if (window.dbus.koolclash_switch_config_mode === '3') {
+							$('#direct').attr('checked', '');							
+						}						
                     })
             },
         }
@@ -1707,6 +1794,6 @@ ${Base64.decode(data.firewall_white_ip)}
             });
         }
     </script>
-    <script src="https://pv.sohu.com/cityjson?ie=utf-8"></script>
+    <!--<script src="https://pv.sohu.com/cityjson?ie=utf-8"></script>-->
     <!--<script src="https://api.ip.sb/jsonip?callback=IP.getIpsbIP"></script>-->
 </content>
