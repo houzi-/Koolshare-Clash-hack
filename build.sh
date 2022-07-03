@@ -5,7 +5,7 @@ VERSION=`cat ./koolclash/webs/res/koolclash_.version`
 TITLE=koolclash
 DESCRIPTION="基于规则的代理程序 Clash"
 HOME_URL="Module_koolclash.asp"
-CHANGELOG="更新修复"
+CHANGELOG="修复BUG"
 
 # Check and include base
 DIR="$( cd "$( dirname "$BASH_SOURCE[0]" )" && pwd )"
