@@ -18,8 +18,8 @@ if [ -f /tmp/upload/clash.config.yaml ]; then
     mkdir -p $KSROOT/koolclash/config/
     # 将上传的文件复制到 Config 目录中
     cp /tmp/upload/clash.config.yaml $KSROOT/koolclash/config/origin.yml
-	sub_time=$(date +%Y-%m-%d\ %X)
-	dbus set koolclash_config_version="<font color="#1bbf35">$sub_time</font>"	
+    sub_time=$(date +%Y-%m-%d\ %X)
+    dbus set koolclash_config_version="<font color="#1bbf35">$sub_time</font>"	
 else
     echo_date "没有找到上传的配置文件！退出！"
     http_response 'notfound'
@@ -38,11 +38,11 @@ yq w -i $KSROOT/koolclash/config/origin.yml allow-lan true
 
 # Change proxy mode
 if [ "$koolclash_switch_config_mode" == "1" ]; then
-	yq w -i $KSROOT/koolclash/config/origin.yml mode "rule"
+    yq w -i $KSROOT/koolclash/config/origin.yml mode "rule"
 elif [ "$koolclash_switch_config_mode" == "2" ]; then
-	yq w -i $KSROOT/koolclash/config/origin.yml mode "global"
+    yq w -i $KSROOT/koolclash/config/origin.yml mode "global"
 elif [ "$koolclash_switch_config_mode" == "3" ]; then
-	yq w -i $KSROOT/koolclash/config/origin.yml mode "direct"
+    yq w -i $KSROOT/koolclash/config/origin.yml mode "direct"
 fi
 
 # 如果没有外部监听控制就使用 LAN IP:6170

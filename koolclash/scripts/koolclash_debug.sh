@@ -18,7 +18,7 @@ if [ ! -f $KSROOT/koolclash/config/config.yaml ]; then
     clash_allow_lan=''
     clash_ext_controller=''
     clash_redir=''
-	clash_mode=''
+    clash_mode=''
     clash_dns_enable=''
     clash_dns_ipv6=''
     clash_dns_mode=''
@@ -27,7 +27,7 @@ else
     clash_allow_lan=$(yq r /koolshare/koolclash/config/config.yaml allow-lan)
     clash_ext_controller=$(yq r /koolshare/koolclash/config/config.yaml external-controller)
     clash_redir=$(yq r /koolshare/koolclash/config/config.yaml redir-port)
-	clash_mode=$(yq r /koolshare/koolclash/config/config.yaml mode)
+    clash_mode=$(yq r /koolshare/koolclash/config/config.yaml mode)
     clash_dns_enable=$(yq r /koolshare/koolclash/config/config.yaml dns.enable)
     clash_dns_ipv6=$(yq r /koolshare/koolclash/config/config.yaml dns.ipv6)
     clash_dns_mode=$(yq r /koolshare/koolclash/config/config.yaml dns.enhanced-mode)

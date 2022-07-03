@@ -52,12 +52,12 @@ start_clash_watchdog() {
 
 kill_clash() {
     [ -n "$(ps | grep koolclash_watchdog.sh | grep -v grep | awk '{print $1}')" ] && echo_date "关闭 Clash 看门狗..." && kill -9 $(ps | grep koolclash_watchdog.sh | grep -v grep | awk '{print $1}') >/dev/null 2>&1 
-	[ -n "$(pidof clash)" ] && echo_date "关闭 Clash 进程..." && killall clash >/dev/null 2>&1 
+    [ -n "$(pidof clash)" ] && echo_date "关闭 Clash 进程..." && killall clash >/dev/null 2>&1 
 }
 
 case $1 in
 update)
-	sub_url=$(dbus get koolclash_suburl | sed -e 's;?;\\?;g' -e 's;&;\\&;g')
+    sub_url=$(dbus get koolclash_suburl | sed -e 's;?;\\?;g' -e 's;&;\\&;g')
     curl=$(which curl)
 
     cp $KSROOT/koolclash/config/origin.yml $KSROOT/koolclash/config/origin-backup.yml
@@ -71,14 +71,14 @@ update)
         sed -i '/^\.\.\.$/ d' $KSROOT/koolclash/config/origin.yml
     else
         http_response 'nocurl'
-		echo_date "路由器中没有 CURL 不能更新配置文件！"
+        echo_date "路由器中没有 CURL 不能更新配置文件！"
         cp $KSROOT/koolclash/config/origin-backup.yml $KSROOT/koolclash/config/origin.yml
         exit 1
     fi
 
     if [ "$(yq r $KSROOT/koolclash/config/origin.yml port | sed 's|[0-9]||g')" == "" ]; then
-		# 下载成功了
-		echo_date "下载 Clash 配置文件成功！"
+        # 下载成功了
+        echo_date "下载 Clash 配置文件成功！"
         rm -rf $KSROOT/koolclash/config/origin-backup.yml
 
         echo_date "设置 redir-port 和 allow-lan 属性"
@@ -90,14 +90,14 @@ update)
         # 启用 external-ui
         yq w -i $KSROOT/koolclash/config/origin.yml external-ui "/koolshare/webs/koolclash/"
 		
-		# Change proxy mode
-		if [ "$koolclash_switch_config_mode" == "1" ]; then
-			yq w -i $KSROOT/koolclash/config/origin.yml mode "rule"
-		elif [ "$koolclash_switch_config_mode" == "2" ]; then
-			yq w -i $KSROOT/koolclash/config/origin.yml mode "global"
-		elif [ "$koolclash_switch_config_mode" == "3" ]; then
-			yq w -i $KSROOT/koolclash/config/origin.yml mode "direct"
-		fi		
+        # Change proxy mode
+        if [ "$koolclash_switch_config_mode" == "1" ]; then
+            yq w -i $KSROOT/koolclash/config/origin.yml mode "rule"
+        elif [ "$koolclash_switch_config_mode" == "2" ]; then
+            yq w -i $KSROOT/koolclash/config/origin.yml mode "global"
+        elif [ "$koolclash_switch_config_mode" == "3" ]; then
+            yq w -i $KSROOT/koolclash/config/origin.yml mode "direct"
+        fi		
 
         cp $KSROOT/koolclash/config/origin.yml $KSROOT/koolclash/config/config.yaml
 
@@ -146,10 +146,10 @@ update)
             fi
         fi
 
-		kill_clash
-		start_clash
-		sleep 1
-		start_clash_watchdog
+        kill_clash
+        start_clash
+        sleep 1
+        start_clash_watchdog
     else
         # 下载失败了
 		echo_date "Clash 配置文件下载失败！"

@@ -36,8 +36,8 @@ overwrite_dns_config() {
 case $2 in
 del)
     dbus remove koolclash_suburl
-	CRONTAB_SUB=$(cat /etc/crontabs/root | grep koolclash_update_sub_cron.sh)
-	[ ! -z "$CRONTAB_SUB" ] && echo_date "删除定时更新 Clash 配置文件CRON..." && sed -i '/koolclash_update_sub_cron/d' /etc/crontabs/root >/dev/null 2>&1
+    CRONTAB_SUB=$(cat /etc/crontabs/root | grep koolclash_update_sub_cron.sh)
+    [ ! -z "$CRONTAB_SUB" ] && echo_date "删除定时更新 Clash 配置文件CRON..." && sed -i '/koolclash_update_sub_cron/d' /etc/crontabs/root >/dev/null 2>&1
     http_response 'ok'
     ;;
 
@@ -49,7 +49,7 @@ update)
         http_response 'ok'
     else
         dbus set koolclash_suburl="$url"
-		sub_url=$(dbus get koolclash_suburl | sed -e 's;?;\\?;g' -e 's;&;\\&;g')
+        sub_url=$(dbus get koolclash_suburl | sed -e 's;?;\\?;g' -e 's;&;\\&;g')
         curl=$(which curl)
 
         cp $KSROOT/koolclash/config/origin.yml $KSROOT/koolclash/config/origin-backup.yml
@@ -57,8 +57,8 @@ update)
 
         if [ "x$curl" != "x" ] && [ -x $curl ]; then
             #$curl -L "$sub_url" -o $KSROOT/koolclash/config/origin.yml
-			$KSROOT/scripts/koolclash_update_yaml.sh
-			$KSROOT/koolclash/config/sub.sh
+            $KSROOT/scripts/koolclash_update_yaml.sh
+            $KSROOT/koolclash/config/sub.sh
             sed -i '/^\-\-\-$/ d' $KSROOT/koolclash/config/origin.yml
             sed -i '/^\.\.\.$/ d' $KSROOT/koolclash/config/origin.yml
         else
@@ -80,14 +80,14 @@ update)
             # 启用 external-ui
             yq w -i $KSROOT/koolclash/config/origin.yml external-ui "/koolshare/webs/koolclash/"
 
-			# Change proxy mode
-			if [ "$koolclash_switch_config_mode" == "1" ]; then
-				yq w -i $KSROOT/koolclash/config/origin.yml mode "rule"
-			elif [ "$koolclash_switch_config_mode" == "2" ]; then
-				yq w -i $KSROOT/koolclash/config/origin.yml mode "global"
-			elif [ "$koolclash_switch_config_mode" == "3" ]; then
-				yq w -i $KSROOT/koolclash/config/origin.yml mode "direct"
-			fi
+            # Change proxy mode
+            if [ "$koolclash_switch_config_mode" == "1" ]; then
+                yq w -i $KSROOT/koolclash/config/origin.yml mode "rule"
+            elif [ "$koolclash_switch_config_mode" == "2" ]; then
+                yq w -i $KSROOT/koolclash/config/origin.yml mode "global"
+            elif [ "$koolclash_switch_config_mode" == "3" ]; then
+                yq w -i $KSROOT/koolclash/config/origin.yml mode "direct"
+            fi
 
             cp $KSROOT/koolclash/config/origin.yml $KSROOT/koolclash/config/config.yaml
 
@@ -127,7 +127,7 @@ update)
                     echo_date "删除 Clash 配置文件中原有的 DNS 配置"
                     yq d -i $KSROOT/koolclash/config/config.yaml dns
                     yq m -x -i $KSROOT/koolclash/config/config.yaml $KSROOT/koolclash/config/dns.yml
-					yq m -x -i $KSROOT/koolclash/config/config.yaml $KSROOT/koolclash/config/profile.yml
+                    yq m -x -i $KSROOT/koolclash/config/config.yaml $KSROOT/koolclash/config/profile.yml
 
                     overwrite_dns_config
 
