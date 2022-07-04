@@ -44,8 +44,8 @@ A rule based custom proxy for <strong>Koolshare OpenWrt/LEDE x64</strong> based 
 
 - HTTP/HTTPS and SOCKS protocol
 - Surge like configuration
-- GeoIP rule support
-- Support Vmess/Shadowsocks/Socks5
+- ~~GeoIP rule support~~
+- ~~Support Vmess/Shadowsocks/Socks5~~
 - Support for Netfilter TCP redirect
 
 Besides those features that Clash have, KoolClash has more:
