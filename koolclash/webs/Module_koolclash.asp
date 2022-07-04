@@ -579,7 +579,7 @@
                         text: '<span id="koolclash_status" name="koolclash_status" color="#1bbf35">正在获取 Clash 进程状态...</span>'
                     },
                     {
-                        title: '<b>代理模式</b>',
+                        title: '<b style="cursor: pointer;" href="javascript:void(0);" onclick="koolclash_helpSwitchMode();">代理模式</b>',
 						name: 'koolclash_switch_rule_mode',
 						suffix: '<span id="radio-mode" class="radio-button" style="display: inline-block;"><input type="radio" id="rule" name="radios" onclick="KoolClash.switchConfigRule();" size="0"><label for="rule">规则</label><input type="radio" id="global" name="radios" onclick="KoolClash.switchConfigGlobal();" size="0"><label for="global">全局</label><input type="radio" id="direct" name="radios" onclick="KoolClash.switchConfigDirect();" size="0"><label for="direct">直连</label></span>',
                     },
@@ -1759,6 +1759,22 @@ ${Base64.decode(data.firewall_white_ip)}
 						}						
                     })
             },
+        }
+
+        function koolclash_helpSwitchMode(){
+            layer.open({
+                type: 0,
+                shade: .7,
+                scrollbar: 0,
+                title: '运行模式【指南】',
+                area: ['780px', '450px'],
+                fixed: false, //不固定
+                maxmin: true,
+                shadeClose: 1,
+                id: 'LAY_switch_rule_mode',
+                btnAlign: 'c',
+				content: '<b>【规则】（Rule）所有请求根据配置文件规则进行分流</b><br><b>【全局】（Global）所有请求直接发往代理服务器</b><b style="color:red;">【切换这个模式需要在 Yacd控制面板 选择全局代理服务器节点】</b><br><b>【直连】（Direct）所有请求直接发往目的地</b>',
+            });
         }
 
         function verifyFields(r) {
