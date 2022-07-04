@@ -601,7 +601,7 @@
                     },
                     {
                         title: '<b>密钥</b>',
-                        text: 'Clash 配置文件中的 secret'
+                        text: 'clash'
                     },
                 ]);
                 $('#koolclash-config').forms([
@@ -805,7 +805,7 @@ dns:
                         E('koolclash_status').innerHTML = pid_text;
                         E('koolclash_watchdog_status').innerHTML = pid_watchdog_text;
                         E('_koolclash_dashboard_host').value = control_host;
-                        E('btn-open-clash-dashboard').href = `http://${control_host}:6170/ui/`
+                        E('btn-open-clash-dashboard').href = `http://${control_host}:6170/ui/?hostname=${control_host}&port=6170&secret=${secret}`
 
                         /*
                          * 0 没有找到 config.yaml
@@ -890,7 +890,7 @@ dns:
 					success: (resp) => {
 						if (resp.result === 'rule') {
 							$('#rule').attr('checked', '');
-							alert("提交成功，下次启动 Clash 时生效！");
+							alert("提交成功，已切换至该模式！");
 						}
 					},
 				});	
@@ -914,7 +914,7 @@ dns:
 					success: (resp) => {
 						if (resp.result === 'global') {
 							$('#global').attr('checked', '');
-							alert("提交成功，下次启动 Clash 时生效！");							
+							alert("提交成功，已切换至该模式！");
 						}
 					},
 				});	
@@ -938,7 +938,7 @@ dns:
 					success: (resp) => {
 						if (resp.result === 'direct') {
 							$('#direct').attr('checked', '');
-							alert("提交成功，下次启动 Clash 时生效！");							
+							alert("提交成功，已切换至该模式！");
 						}
 					},
 				});	
