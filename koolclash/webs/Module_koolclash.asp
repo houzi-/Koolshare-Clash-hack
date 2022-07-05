@@ -490,13 +490,13 @@
 //                        //E(elID).innerHTML = `${resp.data.country} ${resp.data.regionName} ${resp.data.city} ${resp.data.isp}`;
 //                    })
 //            },
-			parseIPIpip: (ip) => {
-				IP.get(`https://api.ip.sb/geoip/${ip}`, 'json')
-					.then(resp => {
-						E('ip-ipapi-geo').innerHTML = resp.data.country;
-						return resp.data.country;					
-					})
-			},
+            parseIPIpip: (ip) => {
+                IP.get(`https://api.ip.sb/geoip/${ip}`, 'json')
+                    .then(resp => {
+                        E('ip-ipapi-geo').innerHTML = resp.data.country;
+                        return resp.data.country;					
+                    })
+            },
             getIpipnetIP: () => {
 				IP.get(`https://forge.speedtest.cn/api/location/info?${+(new Date)}`, 'json')
                 //IP.get(`https://myip.ipip.net?${+(new Date)}`, 'text')
@@ -875,7 +875,7 @@ dns:
                     i.removeAttribute('disabled');
                 }
             },
-			switchConfigRule: () => {			
+            switchConfigRule: () => {			
                 let id = parseInt(Math.random() * 100000000);
                 let postData = JSON.stringify({
                     id,
@@ -883,23 +883,23 @@ dns:
                     "params": [],
                     "fields": ""
                 });
-				
-				$.ajax({
-					type: "POST",
-					cache: false,
-					url: "/_api/",
-					async: true,
-					data: postData,
-					dataType: "json",
-					success: (resp) => {
-						if (resp.result === 'rule') {
-							$('#rule').attr('checked', '');
-							alert("提交成功，已切换至该模式！");
-						}
-					},
-				});	
-			},
-			switchConfigGlobal: () => {			
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/_api/",
+                    async: true,
+                    data: postData,
+                    dataType: "json",
+                    success: (resp) => {
+                        if (resp.result === 'rule') {
+                            $('#rule').attr('checked', '');
+                            alert("提交成功，已切换至该模式！");
+                        }
+                    },
+                });	
+            },
+            switchConfigGlobal: () => {			
                 let id = parseInt(Math.random() * 100000000);
                 let postData = JSON.stringify({
                     id,
@@ -907,23 +907,23 @@ dns:
                     "params": [],
                     "fields": ""
                 });
-				
-				$.ajax({
-					type: "POST",
-					cache: false,
-					url: "/_api/",
-					async: true,
-					data: postData,
-					dataType: "json",
-					success: (resp) => {
-						if (resp.result === 'global') {
-							$('#global').attr('checked', '');
-							alert("提交成功，已切换至该模式！");
-						}
-					},
-				});	
-			},
-			switchConfigDirect: () => {			
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/_api/",
+                    async: true,
+                    data: postData,
+                    dataType: "json",
+                    success: (resp) => {
+                        if (resp.result === 'global') {
+                            $('#global').attr('checked', '');
+                            alert("提交成功，已切换至该模式！");
+                        }
+                    },
+                });	
+            },
+            switchConfigDirect: () => {			
                 let id = parseInt(Math.random() * 100000000);
                 let postData = JSON.stringify({
                     id,
@@ -932,21 +932,21 @@ dns:
                     "fields": ""
                 });
 				
-				$.ajax({
-					type: "POST",
-					cache: false,
-					url: "/_api/",
-					async: true,
-					data: postData,
-					dataType: "json",
-					success: (resp) => {
-						if (resp.result === 'direct') {
-							$('#direct').attr('checked', '');
-							alert("提交成功，已切换至该模式！");
-						}
-					},
-				});	
-			},			
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/_api/",
+                    async: true,
+                    data: postData,
+                    dataType: "json",
+                    success: (resp) => {
+                        if (resp.result === 'direct') {
+                            $('#direct').attr('checked', '');
+                            alert("提交成功，已切换至该模式！");
+                        }
+                    },
+                });	
+            },			
             submitExternalControl: () => {
                 KoolClash.disableAllButton();
 
@@ -979,10 +979,10 @@ dns:
                     }
                 });
             },
-			downloadClashConfig: () => {
-				KoolClash.disableAllButton();
-				E('koolclash-btn-download').innerHTML = '正在导出 Clash 配置...';
-				
+            downloadClashConfig: () => {
+                KoolClash.disableAllButton();
+                E('koolclash-btn-download').innerHTML = '正在导出 Clash 配置...';
+
                 let id = parseInt(Math.random() * 100000000);
                 let postData = JSON.stringify({
                     id,
@@ -990,33 +990,33 @@ dns:
                     "params": [],
                     "fields": ""
                 });
-				
-				$.ajax({
-					type: "POST",
-					cache: false,
-					url: "/_api/",
-					async: true,
-					data: postData,
-					dataType: "json",
-					success: (resp) => {
-						if (resp.result === 'notfound') {
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/_api/",
+                    async: true,
+                    data: postData,
+                    dataType: "json",
+                    success: (resp) => {
+                        if (resp.result === 'notfound') {
 							E('koolclash-btn-download').innerHTML = 'Clash 配置文件找不到了！请重试！';
-						}else {
-							let a = document.createElement('A');
-							a.href = "/files/config.yaml";
-							a.download = 'config.yaml';
-							document.body.appendChild(a);
-							a.click();
-							document.body.removeChild(a);							
-							E('koolclash-btn-download').innerHTML = 'Clash 配置导出成功，页面将自动刷新<span id="koolclash-wait-time"></span>';
-								KoolClash.tminus(5);
-								setTimeout(() => {
-									window.location.reload();
-								}, 5000)
-						}
-					},
-				});					
-			},
+                        }else {
+                            let a = document.createElement('A');
+                            a.href = "/files/config.yaml";
+                            a.download = 'config.yaml';
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);							
+                            E('koolclash-btn-download').innerHTML = 'Clash 配置导出成功，页面将自动刷新<span id="koolclash-wait-time"></span>';
+                                KoolClash.tminus(5);
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 5000)
+                        }
+                    },
+                });					
+            },
             submitClashConfig: () => {
                 KoolClash.disableAllButton();
                 E('koolclash-btn-upload').innerHTML = '正在上传 Clash 配置...';
@@ -1755,15 +1755,15 @@ ${Base64.decode(data.firewall_white_ip)}
                         $('#koolclash-ip').on('click', function() {
                             koolclash_CheckIP();
                         });						
-						if (window.dbus.koolclash_switch_config_mode === '1') {
-							$('#rule').attr('checked', '');
-						} 
-						if (window.dbus.koolclash_switch_config_mode === '2') {
-							$('#global').attr('checked', '');							
-						}
-						if (window.dbus.koolclash_switch_config_mode === '3') {
-							$('#direct').attr('checked', '');							
-						}						
+                        if (window.dbus.koolclash_switch_config_mode === '1') {
+                            $('#rule').attr('checked', '');
+                        } 
+                        if (window.dbus.koolclash_switch_config_mode === '2') {
+                            $('#global').attr('checked', '');							
+                        }
+                        if (window.dbus.koolclash_switch_config_mode === '3') {
+                            $('#direct').attr('checked', '');							
+                        }						
                     })
             },
         }
