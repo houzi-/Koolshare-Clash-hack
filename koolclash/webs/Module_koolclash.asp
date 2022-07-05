@@ -175,30 +175,34 @@
             background: #D7D7D7
         }
 
-		.radio-button {
-			display: none;
-			white-space: nowrap;
-			background-color: #d1d1d1;
-			border-radius: 4px;
-		}
+        .radio-button {
+            display: none;
+            white-space: nowrap;
+            background-color: #d1d1d1;
+            border-radius: 4px;
+        }
 
-		.radio-button input[type="radio"] {
-			display: none;
-		}	
-   
-		.radio-button label {
-			display: inline-block;
-			font-size: 14px;
-			padding: 8px 16px;
-			color: white;
-			cursor: pointer;
-			border-radius: 4px;
-		}
+        .radio-button input[type="radio"] {
+            display: none;
+        }
 
-		.radio-button input[type="radio"]:checked+label {
-			background-color: #1080c1;
-		}
+        .radio-button label {
+            display: inline-block;
+            font-size: 14px;
+            padding: 8px 16px;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
 
+        .radio-button input[type="radio"]:checked+label {
+            background-color: #1080c1;
+        }
+
+        .myskin {
+            background-color: transparent;/*背景透明*/
+            box-shadow: 0 0 0 rgba(0,0,0,0);/*前景无阴影*/
+        }
         /*#koolclash-acl-default-panel {
             margin-top: 16px;
         }*/
@@ -1748,6 +1752,9 @@ ${Base64.decode(data.firewall_white_ip)}
                     .then((res) => {
                         KoolClash.getClashStatus();
                         KoolClash.checkUpdate();
+                        $('#koolclash-ip').on('click', function() {
+                            koolclash_CheckIP();
+                        });						
 						if (window.dbus.koolclash_switch_config_mode === '1') {
 							$('#rule').attr('checked', '');
 						} 
@@ -1764,16 +1771,35 @@ ${Base64.decode(data.firewall_white_ip)}
         function koolclash_helpSwitchMode(){
             layer.open({
                 type: 0,
-                shade: .7,
+                shade: 0.1,
+				skin: 'layui-layer-lan',
                 scrollbar: 0,
                 title: '运行模式【指南】',
-                area: ['780px', '450px'],
+                area: ['400px', '230px'],
                 fixed: false, //不固定
+				resize: false, //禁止拉伸
                 maxmin: true,
                 shadeClose: 1,
                 id: 'LAY_switch_rule_mode',
-                btnAlign: 'c',
-				content: '<b>【规则】（Rule）所有请求根据配置文件规则进行分流</b><br><b>【全局】（Global）所有请求直接发往代理服务器</b><b style="color:red;">【切换这个模式需要在 Yacd控制面板 选择全局代理服务器节点】</b><br><b>【直连】（Direct）所有请求直接发往目的地</b>',
+                content: '<b>【规则】（Rule）所有请求根据配置文件规则进行分流</b><br><b>【全局】（Global）所有请求直接发往代理服务器</b><br><b style="color:red;">（该模式需要在面板选择全局代理服务器节点）</b><br><b>【直连】（Direct）所有请求直接发往目的地</b>',
+            });
+        }
+		
+        function koolclash_CheckIP(){
+            layer.open({
+                type: 2,
+				//skin: 'myskin',
+                shade: 0.1,
+                scrollbar: false,
+                title: 'IP地址详情页',
+                area: ['750px', '170px'],
+                fixed: false, //不固定
+				resize: false, //禁止拉伸
+				move: false,
+                maxmin: true,
+                shadeClose: 1,
+                id: 'LAY_koolclash-ip',
+                content: ['https://ip.skk.moe/simple/', 'no'],
             });
         }
 
