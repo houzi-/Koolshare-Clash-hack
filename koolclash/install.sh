@@ -52,6 +52,7 @@ fi
 # 清理 旧文件夹
 echo_date "KoolClash: 清理旧版文件..."
 rm -rf $KSROOT/bin/clash >/dev/null 2>&1
+rm -rf $KSROOT/bin/subconverter >/dev/null 2>&1
 rm -rf $KSROOT/bin/yq >/dev/null 2>&1
 rm -rf $KSROOT/scripts/koolclash_* >/dev/null 2>&1
 rm -rf $KSROOT/init.d/S99koolclash.sh >/dev/null 2>&1
@@ -74,6 +75,8 @@ echo_date "KoolClash: 复制安装包内的文件到路由器..."
 #cp -rf /tmp/koolclash/bin/* $KSROOT/bin/
 cp -rf /tmp/koolclash/bin/clash-linux-amd64 $KSROOT/bin/clash
 cp -rf /tmp/koolclash/bin/yq_linux_amd64 $KSROOT/bin/yq
+tar -zxvf /tmp/koolclash/bin/subconverter.tar.gz -C $KSROOT/bin
+tar -zxvf subconverter.tar.gz -C /tmp
 cp -rf /tmp/koolclash/scripts/* $KSROOT/scripts/
 cp -rf /tmp/koolclash/init.d/* $KSROOT/init.d/
 cp -rf /tmp/koolclash/webs/* $KSROOT/webs/
@@ -96,6 +99,7 @@ rm -rf /tmp/luci-*
 # 为新安装文件赋予执行权限...
 echo_date "KoolClash: 设置可执行权限"
 chmod 755 $KSROOT/bin/*
+chmod 755 $KSROOT/bin/subconverter/*
 chmod 755 $KSROOT/scripts/koolclash_*
 chmod 755 $KSROOT/init.d/S99koolclash.sh
 
@@ -104,6 +108,8 @@ echo_date "KoolClash: 设置版本号为 $local_version..."
 dbus set koolclash_version=$local_version
 echo_date "KoolClash: 设置代理模式为 规则模式..."
 dbus set koolclash_switch_config_mode=1
+echo_date "KoolClash: 设置运行模式为 Fake-IP（增强）..."
+dbus set koolclash_switch_run_mode=1
 
 sleep 1
 
