@@ -5,6 +5,7 @@
     <script type="text/javascript" src="/js/tomato.js"></script>
     <script type="text/javascript" src="/js/advancedtomato.js"></script>
     <script type="text/javascript" src="/layer/layer.js"></script>
+    <script type="text/javascript" src="/res/koolclash_help.js"></script>	
     <style type="text/css">
         .box,
         #clash_tabs {
@@ -74,6 +75,10 @@
         }
 
         #_koolclash_config_suburl {
+            width: 61.8%;
+        }
+
+        #_koolclash_config_subconverter_url {
             width: 61.8%;
         }
 
@@ -175,18 +180,18 @@
             background: #D7D7D7
         }
 
-        .radio-button {
+        .radio-button-1 {
             display: none;
             white-space: nowrap;
             background-color: #d1d1d1;
             border-radius: 4px;
         }
 
-        .radio-button input[type="radio"] {
+        .radio-button-1 input[type="radio"] {
             display: none;
         }
 
-        .radio-button label {
+        .radio-button-1 label {
             display: inline-block;
             font-size: 14px;
             padding: 8px 16px;
@@ -195,8 +200,32 @@
             border-radius: 4px;
         }
 
-        .radio-button input[type="radio"]:checked+label {
+        .radio-button-1 input[type="radio"]:checked+label {
             background-color: #1080c1;
+        }
+
+        .radio-button-2 {
+            display: none;
+            white-space: nowrap;
+            background-color: #808080;
+            border-radius: 4px;
+        }
+
+        .radio-button-2 input[type="radio"] {
+            display: none;
+        }
+
+        .radio-button-2 label {
+            display: inline-block;
+            font-size: 14px;
+            padding: 8px 16px;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .radio-button-2 input[type="radio"]:checked+label {
+            background-color: #000066;
         }
 
         .myskin {
@@ -364,7 +393,8 @@
                     <div id="koolclash-config"></div>
                     <div class="koolclash-btn-container">
                         <button type="button" id="koolclash-btn-update-sub" onclick="KoolClash.updateRemoteConfig();" class="btn">更新 Clash 托管配置</button>
-                        <button type="button" id="koolclash-btn-del-suburl" onclick="KoolClash.deleteSuburl();" class="btn btn-danger">删除托管 URL（保留 Clash 配置）</button>
+                        <button type="button" id="koolclash-btn-update-subconverter" onclick="KoolClash.updateSubConfig();" class="btn btn-success">开始 Clash 订阅转换</button>
+                        <button type="button" id="koolclash-btn-del-suburl" onclick="KoolClash.deleteSuburl();" class="btn btn-danger">删除托管和订阅 URL（保留 Clash 配置）</button>
                     </div>
                 </div>
             </div>
@@ -429,10 +459,10 @@
                 </div>
             </div>
             <div class="box">
-                <div class="heading">Clash 托管配置定时更新</div>
+                <div class="heading">Clash 配置定时更新</div>
                 <div class="content">
-                    <p>KoolClash 通过OpenWrt自带的crontab实现每天定时定点更新 Clash 托管配置文件。</p>
-                    <p style="color:red; margin-top: 8px">注意！不支持 Clash配置文件上传的更新，只支持 Clash托管URL 的更新！</p>					
+                    <p>KoolClash 通过OpenWrt自带的crontab实现每天定时定点更新 Clash 托管和订阅配置文件。</p>
+                    <p style="color:red; margin-top: 8px">注意！不支持 Clash配置文件上传的更新，只支持 Clash托管和订阅 URL 的更新！</p>					
                     <div id="koolclash-update-sub-panel" style="margin-top: 16px"></div>
                 </div>
             </div>			
@@ -583,9 +613,14 @@
                         text: '<span id="koolclash_status" name="koolclash_status" color="#1bbf35">正在获取 Clash 进程状态...</span>'
                     },
                     {
+                        title: '<b>运行模式</b>',
+						name: 'koolclash_switch_run_mode',
+						suffix: '<span id="radio-run-mode" class="radio-button-2" style="display: inline-block;"><input type="radio" id="fake-ip-enhanced" name="radios-1" size="0"><label for="fake-ip-enhanced">Fake-IP（增强）</label></span>',
+					},
+                    {
                         title: '<b style="cursor: pointer;" href="javascript:void(0);" onclick="koolclash_helpSwitchMode();">代理模式</b>',
 						name: 'koolclash_switch_rule_mode',
-						suffix: '<span id="radio-mode" class="radio-button" style="display: inline-block;"><input type="radio" id="rule" name="radios" onclick="KoolClash.switchConfigRule();" size="0"><label for="rule">规则</label><input type="radio" id="global" name="radios" onclick="KoolClash.switchConfigGlobal();" size="0"><label for="global">全局</label><input type="radio" id="direct" name="radios" onclick="KoolClash.switchConfigDirect();" size="0"><label for="direct">直连</label></span>',
+						suffix: '<span id="radio-mode" class="radio-button-1" style="display: inline-block;"><input type="radio" id="rule" name="radios" onclick="KoolClash.switchConfigRule();" size="0"><label for="rule">规则</label><input type="radio" id="global" name="radios" onclick="KoolClash.switchConfigGlobal();" size="0"><label for="global">全局</label><input type="radio" id="direct" name="radios" onclick="KoolClash.switchConfigDirect();" size="0"><label for="direct">直连</label></span>',
                     },
                     {
                         title: '<b>Clash 看门狗进程状态</b>',
@@ -610,6 +645,11 @@
                 ]);
                 $('#koolclash-config').forms([
                     {
+                        title: '<b>Clash 配置文件更新时间</b>',
+                        name: 'koolclash-config-version',
+                        text: `${window.dbus.koolclash_config_version || '<font color="#e85600">没有获取到更新时间</font>'}`
+                    },
+                    {
                         title: '<b>Clash 配置上传</b>',
                         suffix: '<input type="file" id="koolclash-file-config" size="50"><button id="koolclash-btn-upload" type="button" onclick="KoolClash.submitClashConfig();" class="btn btn-primary">上传配置文件</button>'
                     },
@@ -618,16 +658,18 @@
                         suffix: '<button id="koolclash-btn-download" type="button" onclick="KoolClash.downloadClashConfig();" class="btn btn-primary">导出配置文件</button>'
                     },
                     {
-                        title: '<b>Clash 配置文件更新时间</b>',
-                        name: 'koolclash-config-version',
-                        text: `${window.dbus.koolclash_config_version || '<font color="#e85600">没有获取到更新时间</font>'}`
-                    },					
-                    {
-                        title: '<b>Clash 托管配置 URL</b><br><small>请注意！务必谨慎使用该功能！</small>',
+                        title: '<b style="cursor: pointer;" href="javascript:void(0);" onclick="koolclash_helpSub();">Clash 托管配置 URL</b><br><small style="color:red;">请注意！务必详读使用指南！</small>',
                         name: 'koolclash_config_suburl',
                         type: 'text',
                         value: window.dbus.koolclash_suburl || '',
                         placeholder: 'https://api.example.com/clash'
+                    },
+                    {
+                        title: '<b style="cursor: pointer;" href="javascript:void(0);" onclick="koolclash_helpSubConverter();">Clash 订阅转换 URL</b><br><small style="color:red;">请注意！务必详读使用指南！</small>',
+                        name: 'koolclash_config_subconverter_url',
+                        type: 'text',
+                        value: window.dbus.koolclash_subconverter_url || '',
+                        placeholder: 'https://api.tshl.cc/link/adfjkdlfjsdfje'
                     },
                 ]);
                 $('#koolclash-config-dns').forms([
@@ -680,7 +722,7 @@
                     },
                 ]);
                 $('#koolclash-update-sub-panel').forms([
-                    { title: 'Clash 托管定时开关', multi: [
+                    { title: 'Clash 更新开关', multi: [
 						{ name: 'koolclash-select-update-sub', type: 'select', options:[['0', '禁用'],['1', '开启']], value: window.dbus.koolclash_update_sub_enable || '0', suffix: ' &nbsp;&nbsp;', },
 						{ name: 'koolclash-select-update-sub-time',type: 'select', options:option_time_hour, value: window.dbus.koolclash_update_sub_time || '3' , },
 						{ suffix: '<button type="button" id="koolclash-btn-submit-update-sub" onclick="KoolClash.submitUpdateSub();" class="btn btn-primary">提交</button>', }
@@ -1277,20 +1319,28 @@ dns:
                     data: postData,
                     dataType: "json",
                     success: (resp) => {
-                        E('koolclash-btn-del-suburl').innerHTML = `删除成功！`;
-                        E('_koolclash_config_suburl').value = '';
-
-                        setTimeout(() => {
-                            KoolClash.enableAllButton();
-                            E('koolclash-btn-del-suburl').innerHTML = '删除托管 URL（保留 Clash 配置）';
-                        }, 2500)
+                        if (resp.result === '1') {
+                            E('koolclash-btn-del-suburl').innerHTML = `删除成功！`;
+                            E('_koolclash_config_suburl').value = '';
+                            setTimeout(() => {
+                                KoolClash.enableAllButton();
+                                E('koolclash-btn-del-suburl').innerHTML = '删除托管 URL（保留 Clash 配置）';
+                            }, 2500)
+                        } else if (resp.result === '2') {
+                            E('koolclash-btn-del-suburl').innerHTML = `删除成功！`;
+                            E('_koolclash_config_subconverter_url').value = '';
+                            setTimeout(() => {
+                                KoolClash.enableAllButton();
+                                E('koolclash-btn-del-suburl').innerHTML = '删除托管和订阅 URL（保留 Clash 配置）';
+                            }, 2500)                            
+						}
                     },
                     error: () => {
                         E('koolclash-btn-del-suburl').innerHTML = `删除失败！`;
 
                         setTimeout(() => {
                             KoolClash.enableAllButton();
-                            E('koolclash-btn-del-suburl').innerHTML = '删除托管 URL（保留 Clash 配置）';
+                            E('koolclash-btn-del-suburl').innerHTML = '删除托管和订阅 URL（保留 Clash 配置）';
                         }, 2500)
                     }
                 });
@@ -1347,6 +1397,62 @@ dns:
                         setTimeout(() => {
                             KoolClash.enableAllButton();
                             E('koolclash-btn-update-sub').innerHTML = '更新 Clash 托管配置';
+                        }, 2500)
+                    }
+                });
+            },
+            updateSubConfig: () => {
+                KoolClash.disableAllButton();
+                E('koolclash-btn-update-subconverter').innerHTML = `正在下载最新订阅配置`;
+                let id = parseInt(Math.random() * 100000000),
+                    postData = JSON.stringify({
+                        id,
+                        "method": "koolclash_subconverter.sh",
+                        "params": ['update', `${Base64.encode(E('_koolclash_config_subconverter_url').value)}`],
+                        "fields": ""
+                    });
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/_api/",
+                    data: postData,
+                    dataType: "json",
+                    success: (resp) => {
+                        if (resp.result === 'nocurl') {
+                            E('koolclash-btn-update-subconverter').innerHTML = `你的路由器中没有 curl，不能订阅转换！`;
+                            setTimeout(() => {
+                                KoolClash.enableAllButton();
+                                E('koolclash-btn-update-subconverter').innerHTML = '开始 Clash 订阅转换';
+                            }, 3500)
+                        } else if (resp.result === 'fail') {
+                            E('koolclash-btn-update-subconverter').innerHTML = `Clash 订阅转换配置下载失败！已经自动恢复到旧的配置文件！`;
+                            setTimeout(() => {
+                                KoolClash.enableAllButton();
+                                E('koolclash-btn-update-subconverter').innerHTML = '开始 Clash 订阅转换';
+                            }, 4000)
+                        } else if (resp.result === 'nofallbackdns') {
+                            E('koolclash-btn-update-subconverter').innerHTML = '在托管配置中没有找到 DNS 设置，请在下面添加 DNS 配置！';
+                            E('_koolclash-dns-config-switch').checked = true;
+                            E('_koolclash-dns-config-switch').setAttribute('disabled', '');
+                            $('#_koolclash-config-dns').show();
+                            $('#koolclash-btn-save-dns-config').show();
+                            E('koolclash-btn-save-dns-config').removeAttribute('disabled');
+                            E('koolclash-dns-msg').innerHTML = `Clash 订阅转换配置文件已经更新，但订阅转换配置中不存在 DNS 配置或配置不合法，请在下面提交 DNS 配置`;
+                        } else {
+                            E('koolclash-btn-update-subconverter').innerHTML = 'Clash 配置更新成功，页面将自动刷新<span id="koolclash-wait-time"></span>';
+                            KoolClash.tminus(5);
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 5000)
+                        }
+                    },
+                    error: () => {
+                        E('koolclash-btn-update-subconverter').innerHTML = `Clash 订阅转换配置更新失败！`;
+
+                        setTimeout(() => {
+                            KoolClash.enableAllButton();
+                            E('koolclash-btn-update-subconverter').innerHTML = '开始 Clash 订阅转换';
                         }, 2500)
                     }
                 });
@@ -1759,48 +1865,16 @@ ${Base64.decode(data.firewall_white_ip)}
                             $('#rule').attr('checked', '');
                         } 
                         if (window.dbus.koolclash_switch_config_mode === '2') {
-                            $('#global').attr('checked', '');							
+                            $('#global').attr('checked', '');		
                         }
                         if (window.dbus.koolclash_switch_config_mode === '3') {
-                            $('#direct').attr('checked', '');							
-                        }						
+                            $('#direct').attr('checked', '');
+                        }
+                        if (window.dbus.koolclash_switch_run_mode === '1') {
+                            $('#fake-ip-enhanced').attr('checked', '');
+                        }
                     })
             },
-        }
-
-        function koolclash_helpSwitchMode(){
-            layer.open({
-                type: 0,
-                shade: 0.1,
-				skin: 'layui-layer-lan',
-                scrollbar: 0,
-                title: '运行模式【指南】',
-                area: ['400px', '230px'],
-                fixed: false, //不固定
-				resize: false, //禁止拉伸
-                maxmin: true,
-                shadeClose: 1,
-                id: 'LAY_switch_rule_mode',
-                content: '<b>【规则】（Rule）所有请求根据配置文件规则进行分流</b><br><b>【全局】（Global）所有请求直接发往代理服务器</b><br><b style="color:red;">（该模式需要在面板选择全局代理服务器节点）</b><br><b>【直连】（Direct）所有请求直接发往目的地</b>',
-            });
-        }
-		
-        function koolclash_CheckIP(){
-            layer.open({
-                type: 2,
-				//skin: 'myskin',
-                shade: 0.1,
-                scrollbar: false,
-                title: 'IP地址详情页',
-                area: ['750px', '170px'],
-                fixed: false, //不固定
-				resize: false, //禁止拉伸
-				move: false,
-                maxmin: true,
-                shadeClose: 1,
-                id: 'LAY_koolclash-ip',
-                content: ['https://ip.skk.moe/simple/', 'no'],
-            });
         }
 
         function verifyFields(r) {
