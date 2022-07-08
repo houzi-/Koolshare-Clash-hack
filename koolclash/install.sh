@@ -76,7 +76,6 @@ echo_date "KoolClash: 复制安装包内的文件到路由器..."
 cp -rf /tmp/koolclash/bin/clash-linux-amd64 $KSROOT/bin/clash
 cp -rf /tmp/koolclash/bin/yq_linux_amd64 $KSROOT/bin/yq
 tar -zxvf /tmp/koolclash/bin/subconverter.tar.gz -C $KSROOT/bin
-tar -zxvf subconverter.tar.gz -C /tmp
 cp -rf /tmp/koolclash/scripts/* $KSROOT/scripts/
 cp -rf /tmp/koolclash/init.d/* $KSROOT/init.d/
 cp -rf /tmp/koolclash/webs/* $KSROOT/webs/
