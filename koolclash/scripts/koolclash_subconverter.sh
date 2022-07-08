@@ -52,10 +52,10 @@ decode_url_link () {
 start_stop_subconverter () {
     sub_process=$(pidof subconverter)
     if [ ! -n "$sub_process" ]; then
-	    $KSROOT/bin/subconverter/subconverter >/dev/null 2>&1 &
-	else
-	    killall -9 all $KSROOT/bin/subconverter/subconverter >/dev/null 2>&1
-	fi
+        $KSROOT/bin/subconverter/subconverter >/dev/null 2>&1 &
+    else
+        killall -9 all $KSROOT/bin/subconverter/subconverter >/dev/null 2>&1
+    fi
 }
 
 sub_url_update () {
@@ -64,34 +64,34 @@ sub_url_update () {
     koolclash_sub_link=$(echo $links | sed -e 's/%0A/%7C/g')
     #curl=$(which curl)
     #wget=$(which wget)
-	# 设置subconverter转换订阅URL模式
-	dbus set koolclash_update_mode=2
+    # 设置subconverter转换订阅URL模式
+    dbus set koolclash_update_mode=2
     start_stop_subconverter
     sleep 3s
     subconverter_links="http://127.0.0.1:25500/sub?target=clash&new_name=true&url=$koolclash_sub_link&insert=false&config=ruleconfig%2FZHANG.ini&include=&exclude=&append_type=false&emoji=true&udp=false&fdn=true&sort=true&scv=false&tfo=false"
     UA='Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36'
     $curl -4sSk --user-agent "$UA" --connect-timeout 30 "$subconverter_links" > $KSROOT/koolclash/config/origin.yml
     if [ "$?" == "0" ]; then
-	    [ ! -s "$KSROOT/koolclash/config/origin.yml" ] && $curl -4sSk --user-agent "$UA" --connect-timeout 30 "$subconverter_links" > $KSROOT/koolclash/config/origin.yml
-		if [ ! -s "$KSROOT/koolclash/config/origin.yml" ]; then
+        [ ! -s "$KSROOT/koolclash/config/origin.yml" ] && $curl -4sSk --user-agent "$UA" --connect-timeout 30 "$subconverter_links" > $KSROOT/koolclash/config/origin.yml
+        if [ ! -s "$KSROOT/koolclash/config/origin.yml" ]; then
             http_response 'fail'
             exit 1
         else
             local blank1=$(cat $KSROOT/koolclash/config/origin.yml | grep -E "Redirecting|301")
             local blank2=$(cat $KSROOT/koolclash/config/origin.yml | grep "The following link doesn't contain any valid node info")		
             if [ -n "$blank1" ]; then
-			    if [ -n $(echo $subconverter_links | grep -E "^https") ]; then
+                if [ -n $(echo $subconverter_links | grep -E "^https") ]; then
                     $wget --user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36" --no-check-certificate -q -t3 -T30 -4 -O $KSROOT/koolclash/config/origin.yml "$subconverter_links"
                 else
                     $wget --user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36" -q -t3 -T30 -4 -O $KSROOT/koolclash/config/origin.yml "$subconverter_links"
                 fi
             fi
             if [ -n "$blank2" ]; then
-			    if [ -n $(echo $links | grep -E "^https") ]; then
+                if [ -n $(echo $links | grep -E "^https") ]; then
                     $wget --user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36" --no-check-certificate -q -t3 -T30 -4 -O $KSROOT/koolclash/config/origin.yml "$subconverter_links"
-			    else
+                else
                     $wget --user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36" -q -t3 -T30 -4 -O $KSROOT/koolclash/config/origin.yml "$subconverter_links"
-			    fi
+                fi
             fi
         fi
 

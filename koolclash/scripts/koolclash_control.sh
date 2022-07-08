@@ -89,7 +89,7 @@ dns_forward() {
     echo "no-resolv" >>/tmp/dnsmasq.d/koolclash.conf
     echo "server=127.0.0.1#23453" >>/tmp/dnsmasq.d/koolclash.conf
     echo "cache-size=0" >>/tmp/dnsmasq.d/koolclash.conf
-	restart_dnsmasq
+    restart_dnsmasq
 }
 
 del_dns_forward() {
