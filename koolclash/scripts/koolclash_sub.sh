@@ -35,10 +35,19 @@ overwrite_dns_config() {
 
 case $2 in
 del)
-    dbus remove koolclash_suburl
-    CRONTAB_SUB=$(cat /etc/crontabs/root | grep koolclash_update_sub_cron.sh)
-    [ ! -z "$CRONTAB_SUB" ] && echo_date "删除定时更新 Clash 配置文件CRON..." && sed -i '/koolclash_update_sub_cron/d' /etc/crontabs/root >/dev/null 2>&1
-    http_response 'ok'
+    if [ "$koolclash_update_mode" == "1" ]; then
+        dbus remove koolclash_suburl
+        CRONTAB_SUB=$(cat /etc/crontabs/root | grep koolclash_update_sub_cron.sh)
+        [ ! -z "$CRONTAB_SUB" ] && echo_date "删除定时更新 Clash 配置文件CRON..." && sed -i '/koolclash_update_sub_cron/d' /etc/crontabs/root >/dev/null 2>&1
+        http_response '1'
+    else
+        if [ "$koolclash_update_mode" == "2" ]; then
+            dbus remove koolclash_subconverter_url
+            CRONTAB_SUB=$(cat /etc/crontabs/root | grep koolclash_update_sub_cron.sh)
+            [ ! -z "$CRONTAB_SUB" ] && echo_date "删除定时更新 Clash 配置文件CRON..." && sed -i '/koolclash_update_sub_cron/d' /etc/crontabs/root >/dev/null 2>&1
+            http_response '2'
+        fi
+    fi
     ;;
 
 update)
@@ -49,6 +58,7 @@ update)
         http_response 'ok'
     else
         dbus set koolclash_suburl="$url"
+		dbus set koolclash_update_mode=1
         sub_url=$(dbus get koolclash_suburl | sed -e 's;?;\\?;g' -e 's;&;\\&;g')
         curl=$(which curl)
 

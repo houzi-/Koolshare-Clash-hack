@@ -72,6 +72,12 @@ kill_process() {
 #    echo "cache-size=0" >>/tmp/dnsmasq.d/koolclash.conf
 #}
 
+load_rule_mode () {
+    [ "$(cat /koolshare/koolclash/config/config.yaml | grep "mode: rule")" == "mode: rule" ] && dbus set koolclash_switch_config_mode=1
+    [ "$(cat /koolshare/koolclash/config/config.yaml | grep "mode: rule")" == "mode: global" ] && dbus set koolclash_switch_config_mode=1
+    [ "$(cat /koolshare/koolclash/config/config.yaml | grep "mode: rule")" == "mode: direct" ] && dbus set koolclash_switch_config_mode=1
+}
+
 restart_dnsmasq() {
     # Restart dnsmasq
     echo_date "重启 dnsmasq..."
@@ -345,6 +351,9 @@ apply_nat_rules() {
     # 其余主机默认模式
     # iptables -t nat -A koolclash -j $(get_action_chain $ss_acl_default_mode)
 
+    # 设置运行模式
+    dbus set koolclash_switch_run_mode=1
+
     echo_date "iptables 创建 koolclash 链并添加到 PREROUTING 中"
     iptables -t nat -N koolclash
     iptables -t nat -N koolclash_output
@@ -478,6 +487,7 @@ start_koolclash() {
     start_clash_watchdog
     dbus set koolclash_enable=1
     creat_update_sub_cron
+    load_rule_mode
     echo_date ------------------------------- KoolClash 启动完毕 -------------------------------
     echo_date KoolClash 启动后可能无法立即上网，请先等待 1-2 分钟！
 }
@@ -491,6 +501,8 @@ stop_koolclash() {
     kill_process
     dbus set koolclash_enable=0
     creat_update_sub_cron
+    dbus remove koolclash_switch_run_mode
+    dbus remove koolclash_switch_config_mode
     echo_date ------------------------------- KoolClash 停止完毕 -------------------------------
 }
 
