@@ -703,7 +703,7 @@
                         suffix: '<button id="koolclash-btn-download" type="button" onclick="KoolClash.downloadClashConfig();" class="btn btn-primary">导出配置文件</button>'
                     },
                     {
-                        title: '<b style="cursor: pointer;" href="javascript:void(0);" onclick="KoolClash.koolclash_helpSubConverter();">Clash 订阅转换 URL</b><br><small style="color:red;">请注意！务必详读使用指南！</small>',
+                        title: '<b style="cursor: pointer;" href="javascript:void(0);" onclick="koolclash_helpSubConverter();">Clash 订阅转换 URL</b><br><small style="color:red;">请注意！务必详读使用指南！</small>',
                         name: 'koolclash_config_subconverter_url',
                         type: 'password',
                         peekaboo: 1,
