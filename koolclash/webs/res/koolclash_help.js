@@ -19,20 +19,20 @@ function koolclash_helpSwitchMode(){
     });
 }
 
-function koolclash_helpSub(){
+function koolclash_helpFlow(){
     layer.open({
         type: 0,
         shade: 0.1,
         skin: 'layui-layer-lan',
         scrollbar: 0,
-        title: 'Clash 托管配置 URL【指南】',
+        title: 'Clash 订阅流量信息【指南】',
         area: ['500px', '260px'],
         fixed: false, //不固定
         resize: false, //禁止拉伸
         maxmin: true,
         shadeClose: 1,
         id: 'LAY_switch_rule_mode',
-        content: '<b>只能转换由专业机场提供的 Clash 独有链接，比如：</b><br><b>● 带有clash字样的托管链接</b><br><b>● 托管链接能直接访问并下载到Clash节点信息的</b><br><b>● 如果不符合以上两个条件，可以直接使用【Clash 订阅转换 URL】</b><br><b>● 如果需要定时更新，到【附加功能】开启</b>',
+        content: '<b>此订阅流量显示只要机场提供接口信息都能获取到，比如：</b><br><b>● 大分部机场都会提供</b><br><b>● 不是通过订阅链接获取的信息无法显示</b><br><b>● 上传 Clash 配置文件的流量也无法显示</b><br><b>● 流量使用情况会有误差和延时，请以机场流量使用情况为准</b>',
     });
 }
 
