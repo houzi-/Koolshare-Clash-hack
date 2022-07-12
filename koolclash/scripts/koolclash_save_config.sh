@@ -13,17 +13,17 @@ wan_ip=$(ubus call network.interface.wan status | grep \"address\" | grep -oE '[
 fallbackdns=$(cat $KSROOT/koolclash/config/dns.yml)
 
 # 检测是否能够读取面板上传的 Clash
-if [ -f /tmp/upload/clash.config.yaml ]; then
+if [ "$(cat /tmp/upload/clash.config.yaml)" == "undefined" ]; then
+    echo_date "没有找到上传的配置文件！退出！"
+    http_response 'notfound'
+    exit 1
+else
     echo_date "开始上传配置！"
     mkdir -p $KSROOT/koolclash/config/
     # 将上传的文件复制到 Config 目录中
     cp /tmp/upload/clash.config.yaml $KSROOT/koolclash/config/origin.yml
     sub_time=$(date +%Y-%m-%d\ %X)
-    dbus set koolclash_config_version="<font color="#1bbf35">$sub_time</font>"	
-else
-    echo_date "没有找到上传的配置文件！退出！"
-    http_response 'notfound'
-    exit 1
+    dbus set koolclash_config_version="<font color="#1bbf35">$sub_time</font>"
 fi
 # 删除 tmp 目录中上传的配置文件
 rm -rf /tmp/upload/clash.config.yaml

@@ -1,0 +1,28 @@
+#!/bin/sh
+
+export KSROOT=/koolshare
+source $KSROOT/scripts/base.sh
+alias echo_date='echo 【$(date +%Y年%m月%d日\ %X)】:'
+eval $(dbus export koolclash_)
+
+curl=$(which curl)
+$curl -I -k -s https://api.tshl.cc/link/9jzWm0NlfjMgemtf?mu=6 | grep "Subscription-Userinfo:" > /tmp/header.txt
+
+if [ "$koolclash_update_mode" == "2" ]; then
+    if grep -i 'Subscription-Userinfo:' /tmp/header.txt >/dev/null 2>&1
+    then
+        total=$(cat /tmp/header.txt | awk '{printf $4}' | sed -e 's/total=//g' -e 's/;//g')
+        down=$(cat /tmp/header.txt | awk '{printf $3}' | sed -e 's/download=//g' -e 's/;//g')
+	    time=$(cat /tmp/header.txt | awk '{printf $5}' | sed -e 's/expire=//g' -e 's/;//g')
+        val_1=$(expr $total / 1073741824)
+        val_2=$(expr $down / 1073741824)
+        TOTAL=$(echo $val_1)
+        USED=$(echo $val_2)
+	    expiration_time=$(date -d @$time '+%Y-%m-%d')
+        dbus set koolclash_sub_expiration_time="<font color=#1bbf35>$expiration_time</font>"
+		dbus set koolclash_sub_information="show"
+        http_response "$TOTAL>$USED"
+    fi
+else
+    dbus set koolclash_sub_information="hide"
+fi
