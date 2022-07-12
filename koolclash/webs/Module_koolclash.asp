@@ -706,7 +706,7 @@
                         title: '<b style="cursor: pointer;" href="javascript:void(0);" onclick="KoolClash.koolclash_helpSubConverter();">Clash 订阅转换 URL</b><br><small style="color:red;">请注意！务必详读使用指南！</small>',
                         name: 'koolclash_config_subconverter_url',
                         type: 'password',
-						peekaboo: 1,
+                        peekaboo: 1,
                         value: window.dbus.koolclash_subconverter_url || '',
                         placeholder: 'https://api.tshl.cc/link/adfjkdlfjsdfje'
                     },
