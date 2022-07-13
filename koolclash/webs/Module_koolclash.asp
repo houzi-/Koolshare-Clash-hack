@@ -1351,7 +1351,8 @@ dns:
 
                 $.ajax({
                     type: "POST",
-                    cache: false,			
+                    cache: false,
+                    async: true,					
                     url: "/_api/",
                     data: postData,
                     dataType: "json",
