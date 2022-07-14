@@ -13,9 +13,11 @@ if [ "$koolclash_update_mode" == "2" ]; then
     then
         total=$(cat /tmp/header.txt | awk '{printf $4}' | sed -e 's/total=//g' -e 's/;//g')
         down=$(cat /tmp/header.txt | awk '{printf $3}' | sed -e 's/download=//g' -e 's/;//g')
+        up=$(cat /tmp/header.txt | awk '{printf $2}' | sed -e 's/upload=//g' -e 's/;//g')
         time=$(cat /tmp/header.txt | awk '{printf $5}' | sed -e 's/expire=//g' -e 's/;//g')
+        use_all=$(expr $down + $up)
         val_1=$(expr $total / 1073741824)
-        val_2=$(expr $down / 1073741824)
+        val_2=$(expr $use_all / 1073741824)
         TOTAL=$(echo $val_1)
         USED=$(echo $val_2)
         expiration_time=$(date -d @$time '+%Y-%m-%d')
