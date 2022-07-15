@@ -26,13 +26,13 @@ function koolclash_helpFlow(){
         skin: 'layui-layer-lan',
         scrollbar: 0,
         title: 'Clash 订阅流量信息【指南】',
-        area: ['500px', '260px'],
+        area: ['500px', '280px'],
         fixed: false, //不固定
         resize: false, //禁止拉伸
         maxmin: true,
         shadeClose: 1,
         id: 'LAY_switch_rule_mode',
-        content: '<b>此订阅流量显示只要机场提供接口信息都能获取到，比如：</b><br><b>● 大分部机场都会提供</b><br><b>● 不是通过订阅链接获取的信息无法显示</b><br><b>● 上传 Clash 配置文件的流量也无法显示</b><br><b>● 流量使用情况会有误差和延时，请以机场流量使用情况为准</b>',
+        content: '<b>此订阅流量显示只要机场提供接口信息都能获取到，比如：</b><br><b>● 大分部机场都会提供</b><br><b>● 不是通过订阅链接获取的信息无法显示</b><br><b>● 上传 Clash 配置文件的流量也无法显示</b><br><b>● 流量使用情况会有误差和延时，请以机场流量使用情况为准</b><br><b>● 多订阅无法进行准确的流量显示</b>',
     });
 }
 
