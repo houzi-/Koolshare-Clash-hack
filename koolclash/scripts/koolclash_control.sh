@@ -5,6 +5,7 @@ source $KSROOT/scripts/base.sh
 eval $(dbus export koolclash_)
 alias echo_date='echo 【$(date +%Y年%m月%d日\ %X)】:'
 lan_ip=$(ubus call network.interface.lan status | jsonfilter -e '@["ipv4-address"][0].address')
+wan_ip=$(ubus call network.interface.wan status | jsonfilter -e '@["ipv4-address"][0].address')
 
 ONSTART=$(ps -l | grep $PPID | grep -v grep | grep "S99koolclash")
 
@@ -142,13 +143,13 @@ flush_nat() {
     iptables -t nat -D PREROUTING -p tcp -j koolclash >/dev/null 2>&1
     iptables -t nat -D PREROUTING -d 8.8.4.4/32 -p tcp -m comment --comment "KoolClash Google DNS Hijack" -m tcp --dport 53 -j REDIRECT --to-ports 23456 >/dev/null 2>&1
     iptables -t nat -D PREROUTING -d 8.8.8.8/32 -p tcp -m comment --comment "KoolClash Google DNS Hijack" -m tcp --dport 53 -j REDIRECT --to-ports 23456 >/dev/null 2>&1
-    iptables -t nat -D PREROUTING -p tcp -m tcp --dport 53 -m comment --comment "KoolClash DNS Hijack" -j REDIRECT --to-ports 23453 >/dev/null 2>&1
-    iptables -t nat -D PREROUTING -p udp -m udp --dport 53 -m comment --comment "KoolClash DNS Hijack" -j REDIRECT --to-ports 23453 >/dev/null 2>&1
+    iptables -t nat -D PREROUTING -p tcp -m tcp --dport 53 -m comment --comment "KoolClash DNS Hijack" -j REDIRECT --to-ports 53 >/dev/null 2>&1
+    iptables -t nat -D PREROUTING -p udp -m udp --dport 53 -m comment --comment "KoolClash DNS Hijack" -j REDIRECT --to-ports 53 >/dev/null 2>&1
     iptables -t mangle -D PREROUTING -p udp -j koolclash >/dev/null 2>&1
 
     iptables -t nat -D OUTPUT -j koolclash_output >/dev/null 2>&1
-    iptables -t nat -D OUTPUT -p tcp -m tcp --dport 53 -m comment --comment "KoolClash DNS Hijack" -j REDIRECT --to-ports 23453 >/dev/null 2>&1
-    iptables -t nat -D OUTPUT -p udp -m udp --dport 53 -m comment --comment "KoolClash DNS Hijack" -j REDIRECT --to-ports 23453 >/dev/null 2>&1
+    iptables -t nat -D OUTPUT -p tcp -m tcp --dport 53 -m comment --comment "KoolClash DNS Hijack" -j REDIRECT --to-ports 53 >/dev/null 2>&1
+    iptables -t nat -D OUTPUT -p udp -m udp --dport 53 -m comment --comment "KoolClash DNS Hijack" -j REDIRECT --to-ports 53 >/dev/null 2>&1
 	
     iptables -t nat -F koolclash >/dev/null 2>&1 && iptables -t nat -X koolclash >/dev/null 2>&1
     iptables -t nat -F koolclash_output >/dev/null 2>&1 && iptables -t nat -X koolclash_output >/dev/null 2>&1
@@ -184,6 +185,7 @@ gen_special_ip() {
 		224.0.0.0/4
 		240.0.0.0/4
 		$lan_ip
+		$wan_ip
 	EOF
 }
 #--------------------------------------------------------------------------
@@ -366,14 +368,14 @@ apply_nat_rules() {
     # Redirect Google DNS to 23456
     iptables -t nat -A PREROUTING -d 8.8.4.4/32 -p tcp -m comment --comment "KoolClash Google DNS Hijack" -m tcp --dport 53 -j REDIRECT --to-ports 23456
     iptables -t nat -A PREROUTING -d 8.8.8.8/32 -p tcp -m comment --comment "KoolClash Google DNS Hijack" -m tcp --dport 53 -j REDIRECT --to-ports 23456
-#   iptables -t nat -A PREROUTING -p tcp -m tcp --dport 53 -m comment --comment "KoolClash DNS Hijack" -j REDIRECT --to-ports 23453
-#   iptables -t nat -A PREROUTING -p udp -m udp --dport 53 -m comment --comment "KoolClash DNS Hijack" -j REDIRECT --to-ports 23453
+    iptables -t nat -A PREROUTING -p tcp -m tcp --dport 53 -m comment --comment "KoolClash DNS Hijack" -j REDIRECT --to-ports 53
+    iptables -t nat -A PREROUTING -p udp -m udp --dport 53 -m comment --comment "KoolClash DNS Hijack" -j REDIRECT --to-ports 53
     # Traffic import koolclash
     iptables -t nat -A PREROUTING -p tcp -j koolclash
     iptables -t mangle -A PREROUTING -p udp -j koolclash
 
-#   iptables -t nat -A OUTPUT -p tcp -m tcp --dport 53 -m comment --comment "KoolClash DNS Hijack" -j REDIRECT --to-ports 23453
-#   iptables -t nat -A OUTPUT -p udp -m udp --dport 53 -m comment --comment "KoolClash DNS Hijack" -j REDIRECT --to-ports 23453
+    iptables -t nat -A OUTPUT -p tcp -m tcp --dport 53 -m comment --comment "KoolClash DNS Hijack" -j REDIRECT --to-ports 53
+    iptables -t nat -A OUTPUT -p udp -m udp --dport 53 -m comment --comment "KoolClash DNS Hijack" -j REDIRECT --to-ports 53
     iptables -t nat -A OUTPUT -j koolclash_output
 
     # IP Whitelist
@@ -387,7 +389,7 @@ apply_nat_rules() {
     for mangle_dest_port in $mangle_dest_port; do
         iptables -t mangle -A koolclash -p udp -m udp --sport "$mangle_dest_port" -j RETURN
     done
-	
+
     src_dport=`ubus call uci get '{ "config": "firewall", "type": "redirect" }' | grep port | sed -e 's/^[ \t]*//g' | grep dport | sed -e 's/"src_dport": "//g' -e 's/".*//g'`
     for src_dport in $src_dport; do
         iptables -t nat -A koolclash_output -s "$lan_ip" -p tcp -m tcp --dport "$src_dport" -j RETURN
