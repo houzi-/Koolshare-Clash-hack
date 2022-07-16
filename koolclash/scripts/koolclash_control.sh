@@ -148,13 +148,14 @@ flush_nat() {
     iptables -t mangle -D PREROUTING -p udp -j koolclash >/dev/null 2>&1
 
     iptables -t nat -D OUTPUT -j koolclash_output >/dev/null 2>&1
+	iptables -t nat -D OUTPUT -j koolclash >/dev/null 2>&1
     iptables -t nat -D OUTPUT -p tcp -m tcp --dport 53 -m comment --comment "KoolClash DNS Hijack" -j REDIRECT --to-ports 53 >/dev/null 2>&1
     iptables -t nat -D OUTPUT -p udp -m udp --dport 53 -m comment --comment "KoolClash DNS Hijack" -j REDIRECT --to-ports 53 >/dev/null 2>&1
-	
+
     iptables -t nat -F koolclash >/dev/null 2>&1 && iptables -t nat -X koolclash >/dev/null 2>&1
     iptables -t nat -F koolclash_output >/dev/null 2>&1 && iptables -t nat -X koolclash_output >/dev/null 2>&1
-    iptables -t mangle -F koolclash >/dev/null 2>&1 && iptables -t mangle -X koolclash >/dev/null 2>&1	
-	
+    iptables -t mangle -F koolclash >/dev/null 2>&1 && iptables -t mangle -X koolclash >/dev/null 2>&1
+
     echo_date "删除 KoolClash 添加的 ipset 名单"
     # flush ipset rules
     ipset -F koolclash_white >/dev/null 2>&1 && ipset -X koolclash_white >/dev/null 2>&1
@@ -358,13 +359,13 @@ apply_nat_rules() {
 
     echo_date "iptables 创建 koolclash 链并添加到 PREROUTING 中"
     iptables -t nat -N koolclash
-    iptables -t nat -N koolclash_output
+    #iptables -t nat -N koolclash_output
     iptables -t mangle -N koolclash
 
     # Add routing table
     ip rule add fwmark 0x162 table 0x162
     ip route add local 0.0.0.0/0 dev lo table 0x162
-	
+
     # Redirect Google DNS to 23456
     iptables -t nat -A PREROUTING -d 8.8.4.4/32 -p tcp -m comment --comment "KoolClash Google DNS Hijack" -m tcp --dport 53 -j REDIRECT --to-ports 23456
     iptables -t nat -A PREROUTING -d 8.8.8.8/32 -p tcp -m comment --comment "KoolClash Google DNS Hijack" -m tcp --dport 53 -j REDIRECT --to-ports 23456
@@ -374,16 +375,17 @@ apply_nat_rules() {
     iptables -t nat -A PREROUTING -p tcp -j koolclash
     iptables -t mangle -A PREROUTING -p udp -j koolclash
 
-    iptables -t nat -A OUTPUT -p tcp -m tcp --dport 53 -m comment --comment "KoolClash DNS Hijack" -j REDIRECT --to-ports 53
-    iptables -t nat -A OUTPUT -p udp -m udp --dport 53 -m comment --comment "KoolClash DNS Hijack" -j REDIRECT --to-ports 53
-    iptables -t nat -A OUTPUT -j koolclash_output
+    #iptables -t nat -A OUTPUT -p tcp -m tcp --dport 53 -m comment --comment "KoolClash DNS Hijack" -j REDIRECT --to-ports 53
+    #iptables -t nat -A OUTPUT -p udp -m udp --dport 53 -m comment --comment "KoolClash DNS Hijack" -j REDIRECT --to-ports 53
+    #iptables -t nat -A OUTPUT -j koolclash_output
+    #iptables -t nat -A OUTPUT -j koolclash
 
     # IP Whitelist
-    iptables -t nat -A koolclash -m set --match-set koolclash_white dst -j RETURN
-    iptables -t nat -A koolclash -m set --match-set koolclash_chn_white dst -j RETURN
+    #iptables -t nat -A koolclash -m set --match-set koolclash_white dst -j RETURN
+    #iptables -t nat -A koolclash -m set --match-set koolclash_chn_white dst -j RETURN
     # Redirect all tcp traffic to 23456
     iptables -t nat -A koolclash -p tcp -j REDIRECT --to-ports 23456
-	
+
     # Exclude port traffic
     mangle_dest_port=`ubus call uci get '{ "config": "firewall", "type": "rule" }' | grep dest_port | sed -e 's/^[ \t]*//g' | sed -e 's/"dest_port": "//g' -e 's/".*//g'`
     for mangle_dest_port in $mangle_dest_port; do
@@ -392,25 +394,26 @@ apply_nat_rules() {
 
     src_dport=`ubus call uci get '{ "config": "firewall", "type": "redirect" }' | grep port | sed -e 's/^[ \t]*//g' | grep dport | sed -e 's/"src_dport": "//g' -e 's/".*//g'`
     for src_dport in $src_dport; do
-        iptables -t nat -A koolclash_output -s "$lan_ip" -p tcp -m tcp --dport "$src_dport" -j RETURN
-        iptables -t mangle -A koolclash -s "$lan_ip" -p udp -m udp --dport "$src_dport" -j RETURN	
+        #iptables -t nat -A koolclash_output -s "$lan_ip" -p tcp -m tcp --dport "$src_dport" -j RETURN
+        iptables -t mangle -A koolclash -s "$lan_ip" -p udp -m udp --dport "$src_dport" -j RETURN
     done
     dest_port=`ubus call uci get '{ "config": "firewall", "type": "redirect" }' | grep port | sed -e 's/^[ \t]*//g' | grep dest | sed -e 's/"dest_port": "//g' -e 's/".*//g'`
     for dest_port in $dest_port; do
-        iptables -t nat -A koolclash_output -s "$lan_ip" -p tcp -m tcp --sport "$dest_port" -j RETURN
-        iptables -t mangle -A koolclash -s "$lan_ip" -p udp -m udp --sport "$dest_port" -j RETURN		
+        #iptables -t nat -A koolclash_output -s "$lan_ip" -p tcp -m tcp --sport "$dest_port" -j RETURN
+        iptables -t mangle -A koolclash -s "$lan_ip" -p udp -m udp --sport "$dest_port" -j RETURN
     done
 
     # IP Whitelist
-    iptables -t nat -A koolclash_output -m set --match-set koolclash_white dst -j RETURN
-    iptables -t nat -A koolclash_output -m set --match-set koolclash_chn_white dst -j RETURN
+    #iptables -t nat -A koolclash_output -m set --match-set koolclash_white dst -j RETURN
+    #iptables -t nat -A koolclash_output -m set --match-set koolclash_chn_white dst -j RETURN
     # Redirect all tcp traffic to 23456
-    iptables -t nat -A koolclash_output -d 198.18.0.0/16 -p tcp -j REDIRECT --to-ports 23456
+    #iptables -t nat -A koolclash_output -d 198.18.0.0/16 -p tcp -j REDIRECT --to-ports 23456
+    #iptables -t nat -A koolclash_output -p tcp -j REDIRECT --to-ports 23456
     # IP Whitelist
     iptables -t mangle -A koolclash -m set --match-set koolclash_white dst -j RETURN
     iptables -t mangle -A koolclash -m set --match-set koolclash_chn_white dst -j RETURN
     # Exclude port traffic
-    iptables -t mangle -A koolclash -p udp -m udp --dport 53 -j RETURN	
+    iptables -t mangle -A koolclash -p udp -m udp --dport 53 -j RETURN
     iptables -t mangle -A koolclash -p udp -j TPROXY --on-port 23456 --on-ip 0.0.0.0 --tproxy-mark 0x162
 }
 
