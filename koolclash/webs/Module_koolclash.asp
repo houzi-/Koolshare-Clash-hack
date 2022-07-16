@@ -1930,6 +1930,10 @@ ${Base64.decode(data.firewall_white_ip)}
                         if (window.dbus.koolclash_sub_information === 'hide') {
                             $('#koolclash-config > fieldset:nth-child(2)').hide();
                             $('#koolclash-config > fieldset:nth-child(3)').hide();
+                        }
+                        if (window.dbus.koolclash_update_mode === '2') {
+                            $('#koolclash-content-additional > div:nth-child(2)').show();
+                        } else {
                             $('#koolclash-content-additional > div:nth-child(2)').hide();
                         }
                         $('#koolclash-ip').on('click', function() {

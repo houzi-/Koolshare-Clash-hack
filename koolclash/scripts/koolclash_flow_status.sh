@@ -6,7 +6,7 @@ alias echo_date='echo 【$(date +%Y年%m月%d日\ %X)】:'
 eval $(dbus export koolclash_)
 
 curl=$(which curl)
-$curl -I -k -s https://api.tshl.cc/link/9jzWm0NlfjMgemtf?mu=6 | grep "Subscription-Userinfo:" > /tmp/header.txt
+$curl -I -k -s $koolclash_subconverter_url | grep "Subscription-Userinfo:" > /tmp/header.txt
 
 if [ "$koolclash_update_mode" == "2" ]; then
     if grep -i 'Subscription-Userinfo:' /tmp/header.txt >/dev/null 2>&1
@@ -24,6 +24,8 @@ if [ "$koolclash_update_mode" == "2" ]; then
         dbus set koolclash_sub_expiration_time="<font color=#1bbf35>$expiration_time</font>"
         dbus set koolclash_sub_information="show"
         http_response "$TOTAL>$USED"
+	else
+        dbus set koolclash_sub_information="hide"
     fi
 else
     dbus set koolclash_sub_information="hide"
