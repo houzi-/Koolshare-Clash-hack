@@ -1745,7 +1745,7 @@ ${Base64.decode(Base64.decode(data.iptables_mangle_clash))}
  * iptables nat 中 koolclash 链
 ${Base64.decode(Base64.decode(data.iptables_nat_clash))}
 
-* iptables nat 中 OUTPUT 链
+ * iptables nat 中 OUTPUT 链
 ${Base64.decode(Base64.decode(data.iptables_mangle_clash_dns))}
 
  * iptables nat 中 koolclash_output 链
