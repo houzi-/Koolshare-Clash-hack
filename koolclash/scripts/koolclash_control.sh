@@ -148,7 +148,7 @@ flush_nat() {
     iptables -t mangle -D PREROUTING -p udp -j koolclash >/dev/null 2>&1
 
     iptables -t nat -D OUTPUT -j koolclash_output >/dev/null 2>&1
-	iptables -t nat -D OUTPUT -j koolclash >/dev/null 2>&1
+    iptables -t nat -D OUTPUT -j koolclash >/dev/null 2>&1
     iptables -t nat -D OUTPUT -p tcp -m tcp --dport 53 -m comment --comment "KoolClash DNS Hijack" -j REDIRECT --to-ports 53 >/dev/null 2>&1
     iptables -t nat -D OUTPUT -p udp -m udp --dport 53 -m comment --comment "KoolClash DNS Hijack" -j REDIRECT --to-ports 53 >/dev/null 2>&1
 
