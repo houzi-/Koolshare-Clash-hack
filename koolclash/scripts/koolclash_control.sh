@@ -429,7 +429,7 @@ creat_update_sub_cron() {
 		if [ "$koolclash_update_sub_enable" == "1" ]; then
 			[ ! -f  "/etc/crontabs/root" ] && touch /etc/crontabs/root
 			CRONTAB_SUB=$(cat /etc/crontabs/root | grep koolclash_update_sub_cron.sh)
-			if [ -f "$KSROOT/koolclash/config/sub.sh" ]; then
+			if [ -n "$koolclash_subconverter_url" ]; then
 				[ -z "$CRONTAB_SUB" ] && echo_date "每天 $koolclash_update_sub_time 点定时更新 Clash 配置文件命令写入CRON中..." && echo  "0 $koolclash_update_sub_time * * * $KSROOT/scripts/koolclash_update_sub_cron.sh update" >> /etc/crontabs/root
 			else
 				echo_date "更新 Clash 配置文件命令写入CRON失败！"
