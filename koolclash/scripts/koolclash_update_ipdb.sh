@@ -25,7 +25,11 @@ else
 fi
 
 echo_date "开始下载最新 IP 数据库..." >>/tmp/upload/koolclash_log.txt
+# 代理自身流量
+iptables -t nat -A OUTPUT -j koolclash >/dev/null 2>&1
 $command
+# 删除代理自身流量，避免回环
+iptables -t nat -D OUTPUT -j koolclash >/dev/null 2>&1
 
 if [ ! -f "$KSROOT/koolclash/Country.mmdb" ]; then
     echo_date "下载 IP 数据库失败！" >>/tmp/upload/koolclash_log.txt
