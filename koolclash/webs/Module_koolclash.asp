@@ -1939,17 +1939,19 @@ ${Base64.decode(data.firewall_white_ip)}
                         $('#koolclash-ip').on('click', function() {
                             koolclash_CheckIP();
                         });
-                        if (window.dbus.koolclash_switch_config_mode === '1') {
-                            $('#rule').attr('checked', '');
-                        }
-                        if (window.dbus.koolclash_switch_config_mode === '2') {
-                            $('#global').attr('checked', '');		
-                        }
-                        if (window.dbus.koolclash_switch_config_mode === '3') {
-                            $('#direct').attr('checked', '');
-                        }
-                        if (window.dbus.koolclash_switch_run_mode === '1') {
-                            $('#fake-ip-enhanced').attr('checked', '');
+                        if (window.dbus.koolclash_enable === '1') {
+                            if (window.dbus.koolclash_switch_config_mode === '1') {
+                                $('#rule').attr('checked', '');
+                            }
+                            if (window.dbus.koolclash_switch_config_mode === '2') {
+                                $('#global').attr('checked', '');		
+                            }
+                            if (window.dbus.koolclash_switch_config_mode === '3') {
+                                $('#direct').attr('checked', '');
+                            }
+                            if (window.dbus.koolclash_switch_run_mode === '1') {
+                                $('#fake-ip-enhanced').attr('checked', '');
+                            }
                         }
                     })
             },

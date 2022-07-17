@@ -74,7 +74,6 @@ sub_url_update () {
     if [ "$?" == "0" ]; then
         [ ! -s "$KSROOT/koolclash/config/origin.yml" ] && $curl -4sSk --user-agent "$UA" --connect-timeout 30 "$subconverter_links" > $KSROOT/koolclash/config/origin.yml
         if [ ! -s "$KSROOT/koolclash/config/origin.yml" ]; then
-            http_response 'fail'
             exit 1
         else
             local blank1=$(cat $KSROOT/koolclash/config/origin.yml | grep -E "Redirecting|301")
@@ -160,38 +159,14 @@ sub_url_update () {
                 sed -i 's/^mixed-port:/port:/g' $KSROOT/koolclash/config/origin.yml
             fi
         else
-            http_response 'fail'
             exit 1            
         fi
 	else
         start_stop_subconverter
-        http_response 'fail'
         exit 1
     fi
 }
 #---------------------------------------------------------------------
-
-start_clash() {
-    echo_date "启动 Clash 进程..."
-    start-stop-daemon -S -q -b -m \
-        -p /tmp/run/koolclash.pid \
-        -x $KSROOT/bin/clash \
-        -- -d $KSROOT/koolclash/config/
-}
-
-start_clash_watchdog() {
-    if [ "$koolclash_watchdog_enable" == "1" ]; then
-        echo_date "启动 Clash 看门狗进程守护..."
-        start-stop-daemon -S -q -b -m \
-            -p /tmp/run/koolclash.pid \
-            -x $KSROOT/scripts/koolclash_watchdog.sh
-    fi
-}
-
-kill_clash() {
-    [ -n "$(ps | grep koolclash_watchdog.sh | grep -v grep | awk '{print $1}')" ] && echo_date "关闭 Clash 看门狗..." && kill -9 $(ps | grep koolclash_watchdog.sh | grep -v grep | awk '{print $1}') >/dev/null 2>&1 
-    [ -n "$(pidof clash)" ] && echo_date "关闭 Clash 进程..." && killall clash >/dev/null 2>&1 
-}
 
 case $1 in
 update)
@@ -216,7 +191,6 @@ update)
         sed -i '/^\-\-\-$/ d' $KSROOT/koolclash/config/origin.yml
         sed -i '/^\.\.\.$/ d' $KSROOT/koolclash/config/origin.yml
     else
-        http_response 'nocurl'
         echo_date "路由器中没有 CURL 不能更新配置文件！"
         cp $KSROOT/koolclash/config/origin-backup.yml $KSROOT/koolclash/config/origin.yml
         exit 1
@@ -240,11 +214,11 @@ update)
 		
         # Change proxy mode
         if [ "$koolclash_switch_config_mode" == "1" ]; then
-            yq w -i $KSROOT/koolclash/config/origin.yml mode "rule"
+            yq w -i $KSROOT/koolclash/config/origin.yml mode "Rule"
         elif [ "$koolclash_switch_config_mode" == "2" ]; then
-            yq w -i $KSROOT/koolclash/config/origin.yml mode "global"
+            yq w -i $KSROOT/koolclash/config/origin.yml mode "Global"
         elif [ "$koolclash_switch_config_mode" == "3" ]; then
-            yq w -i $KSROOT/koolclash/config/origin.yml mode "direct"
+            yq w -i $KSROOT/koolclash/config/origin.yml mode "Direct"
         fi		
 
         cp $KSROOT/koolclash/config/origin.yml $KSROOT/koolclash/config/config.yaml
@@ -269,14 +243,12 @@ update)
 
             overwrite_dns_config
             echo_date "Clash 配置文件上传成功！"
-            http_response 'success'
         else
             echo_date "在 Clash 配置文件中没有找到 DNS 配置！"
             if [ ! -n "$fallbackdns" ]; then
                 echo_date "没有找到后备 DNS 配置！请前往「配置文件」提交后备 DNS 配置！"
                 # 设置 DNS Mode 为 3
                 dbus set koolclash_dnsmode=3
-                http_response 'nofallbackdns'
             else
                 echo_date "找到后备 DNS 配置！合并到 Clash 配置文件中..."
 
@@ -290,21 +262,16 @@ update)
                 overwrite_dns_config
 
                 echo_date "Clash 配置文件上传成功！"
-                http_response 'success'
             fi
         fi
 
-        kill_clash
-        start_clash
-        sleep 1
-        start_clash_watchdog
+        $KSROOT/scripts/koolclash_control.sh start
     else
         # 下载失败了
 		echo_date "Clash 配置文件下载失败！"
         rm -rf $KSROOT/koolclash/config/origin.yml
         cp $KSROOT/koolclash/config/origin-backup.yml $KSROOT/koolclash/config/origin.yml
         rm -rf $KSROOT/koolclash/config/origin-backup.yml
-        http_response 'fail'
     fi
     ;;
 esac

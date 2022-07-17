@@ -38,11 +38,11 @@ yq w -i $KSROOT/koolclash/config/origin.yml allow-lan true
 
 # Change proxy mode
 if [ "$koolclash_switch_config_mode" == "1" ]; then
-    yq w -i $KSROOT/koolclash/config/origin.yml mode "rule"
+    yq w -i $KSROOT/koolclash/config/origin.yml mode "Rule"
 elif [ "$koolclash_switch_config_mode" == "2" ]; then
-    yq w -i $KSROOT/koolclash/config/origin.yml mode "global"
+    yq w -i $KSROOT/koolclash/config/origin.yml mode "Global"
 elif [ "$koolclash_switch_config_mode" == "3" ]; then
-    yq w -i $KSROOT/koolclash/config/origin.yml mode "direct"
+    yq w -i $KSROOT/koolclash/config/origin.yml mode "Direct"
 fi
 
 # 如果没有外部监听控制就使用 LAN IP:6170

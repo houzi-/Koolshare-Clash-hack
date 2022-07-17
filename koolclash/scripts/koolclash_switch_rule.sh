@@ -20,5 +20,5 @@ curl -sv \
 -X DELETE "http://$ipaddr_port/connections"  2>&1
 
 dbus set koolclash_switch_config_mode=1
-yq w -i $KSROOT/koolclash/config/config.yaml mode "rule"
+yq w -i $KSROOT/koolclash/config/config.yaml mode "Rule"
 http_response 'rule'

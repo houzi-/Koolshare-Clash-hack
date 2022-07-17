@@ -74,9 +74,18 @@ kill_process() {
 #}
 
 load_rule_mode () {
-    [ "$(cat /koolshare/koolclash/config/config.yaml | grep "mode: rule")" == "mode: rule" ] && dbus set koolclash_switch_config_mode=1
-    [ "$(cat /koolshare/koolclash/config/config.yaml | grep "mode: rule")" == "mode: global" ] && dbus set koolclash_switch_config_mode=1
-    [ "$(cat /koolshare/koolclash/config/config.yaml | grep "mode: rule")" == "mode: direct" ] && dbus set koolclash_switch_config_mode=1
+    if [ "$(cat /koolshare/koolclash/config/config.yaml | grep "mode: Rule")" == "mode: Rule" ]; then
+        echo_date "代理模式为 Rule"
+        dbus set koolclash_switch_config_mode=1
+    fi
+    if [ "$(cat /koolshare/koolclash/config/config.yaml | grep "mode: Global")" == "mode: Global" ]; then
+        echo_date "代理模式为 Global"
+        dbus set koolclash_switch_config_mode=2
+    fi
+    if [ "$(cat /koolshare/koolclash/config/config.yaml | grep "mode: Direct")" == "mode: Direct" ]; then
+        echo_date "代理模式为 Direct"
+        dbus set koolclash_switch_config_mode=3
+    fi
 }
 
 restart_dnsmasq() {
@@ -226,16 +235,16 @@ add_white_black_ip() {
     if [ ! -z $koolclash_firewall_whitedomain_base64 ]; then
         ip_white_domain=$(echo $koolclash_firewall_whitedomain_base64 | base64_decode)
         echo_date '应用外网目标域名白名单'
-               ISP_DNS=$(ubus call network.interface.wan status | jsonfilter -e '@["dns-server"][0]')
-               rm -rf /tmp/dnsmasq.d/koolclash_ipset.conf >/dev/null 2>&1
-               rm -rf /tmp/dnsmasq.d/koolclash_white_server.conf >/dev/null 2>&1
-               echo "#for koolclash white_domain" >> /tmp/dnsmasq.d/koolclash_ipset.conf
-               echo "#for koolclash white_domain_server" >> /tmp/dnsmasq.d/koolclash_white_server.conf
+        ISP_DNS=$(ubus call network.interface.wan status | jsonfilter -e '@["dns-server"][0]')
+        rm -rf /tmp/dnsmasq.d/koolclash_ipset.conf >/dev/null 2>&1
+        rm -rf /tmp/dnsmasq.d/koolclash_white_server.conf >/dev/null 2>&1
+        echo "#for koolclash white_domain" >> /tmp/dnsmasq.d/koolclash_ipset.conf
+        echo "#for koolclash white_domain_server" >> /tmp/dnsmasq.d/koolclash_white_server.conf
         for domain in $ip_white_domain; do
-               echo "$domain" | sed "s/^/ipset=&\/./g" | sed "s/$/\/koolclash_white/g" >> /tmp/dnsmasq.d/koolclash_ipset.conf
-               echo "$domain" | sed "s/^/server=&\//g" | sed "s/$/\/$ISP_DNS/g" >> /tmp/dnsmasq.d/koolclash_white_server.conf
+            echo "$domain" | sed "s/^/ipset=&\/./g" | sed "s/$/\/koolclash_white/g" >> /tmp/dnsmasq.d/koolclash_ipset.conf
+            echo "$domain" | sed "s/^/server=&\//g" | sed "s/$/\/$ISP_DNS/g" >> /tmp/dnsmasq.d/koolclash_white_server.conf
         done
-     else
+    else
         rm -rf /tmp/dnsmasq.d/koolclash_ipset.conf >/dev/null 2>&1
         rm -rf /tmp/dnsmasq.d/koolclash_white_server.conf >/dev/null 2>&1
     fi
@@ -505,6 +514,8 @@ stop_koolclash() {
     creat_update_sub_cron
     dbus remove koolclash_switch_run_mode
     dbus remove koolclash_switch_config_mode
+    rm -rf /tmp/dnsmasq.d/koolclash_ipset.conf >/dev/null 2>&1
+    rm -rf /tmp/dnsmasq.d/koolclash_white_server.conf >/dev/null 2>&1
     echo_date ------------------------------- KoolClash 停止完毕 -------------------------------
 }
 
