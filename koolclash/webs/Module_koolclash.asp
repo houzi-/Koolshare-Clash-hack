@@ -783,8 +783,8 @@
                 cache: false,
                 data: JSON.stringify(postData1),
                 dataType: "json",
-                success: function(response){
-                    if (response){
+                success: function(response) {
+                    if (response) {
                         get_dbus_data();
                         var s2 = dbus["koolclash_arp"].split( '>' );
                         for ( var i = 0; i < s2.length; ++i ) {
@@ -800,7 +800,7 @@
                         kcacl.setup();
                     }
                 },
-                error:function(){
+                error:function() {
                     get_dbus_data();
                     var s2 = dbus["koolclash_arp"].split( '>' );
                     for ( var i = 0; i < s2.length; ++i ) {
