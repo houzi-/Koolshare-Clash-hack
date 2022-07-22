@@ -74,6 +74,10 @@
             margin-top: 16px;
         }
 
+        #koolclash-btn-submit-device-control {
+            margin-top: 16px;
+        }
+
         #_koolclash_config_suburl {
             width: 61.8%;
         }
@@ -128,6 +132,7 @@
         #koolclash-nav-overview:checked~.nav-tabs .koolclash-nav-overview>.koolclash-nav-tab,
         #koolclash-nav-config:checked~.nav-tabs .koolclash-nav-config>.koolclash-nav-tab,
         #koolclash-nav-firewall:checked~.nav-tabs .koolclash-nav-firewall>.koolclash-nav-tab,
+        #koolclash-nav-control:checked~.nav-tabs .koolclash-nav-control>.koolclash-nav-tab,
         #koolclash-nav-additional:checked~.nav-tabs .koolclash-nav-additional>.koolclash-nav-tab,
         #koolclash-nav-log:checked~.nav-tabs .koolclash-nav-log>.koolclash-nav-tab,
         #koolclash-nav-debug:checked~.nav-tabs .koolclash-nav-debug>.koolclash-nav-tab {
@@ -144,6 +149,7 @@
         #koolclash-nav-overview:checked~.tab-content>#koolclash-content-overview,
         #koolclash-nav-config:checked~.tab-content>#koolclash-content-config,
         #koolclash-nav-firewall:checked~.tab-content>#koolclash-content-firewall,
+        #koolclash-nav-control:checked~.tab-content>#koolclash-content-control,
         #koolclash-nav-additional:checked~.tab-content>#koolclash-content-additional,
         #koolclash-nav-log:checked~.tab-content>#koolclash-content-log,
         #koolclash-nav-debug:checked~.tab-content>#koolclash-content-debug {
@@ -299,6 +305,7 @@
     <input class="koolclash-nav-radio" id="koolclash-nav-overview" type="radio" name="nav-tab" checked>
     <input class="koolclash-nav-radio" id="koolclash-nav-config" type="radio" name="nav-tab">
     <input class="koolclash-nav-radio" id="koolclash-nav-firewall" type="radio" name="nav-tab">
+    <input class="koolclash-nav-radio" id="koolclash-nav-control" type="radio" name="nav-tab">    
     <input class="koolclash-nav-radio" id="koolclash-nav-additional" type="radio" name="nav-tab">
     <input class="koolclash-nav-radio" id="koolclash-nav-log" type="radio" name="nav-tab">
     <input class="koolclash-nav-radio" id="koolclash-nav-debug" type="radio" name="nav-tab">
@@ -328,8 +335,16 @@
         <li>
             <label class="koolclash-nav-firewall koolclash-nav-label" for="koolclash-nav-firewall">
                 <div class="koolclash-nav-tab">
-                    <i class="icon-lock"></i>
+                    <i class="icon-globe"></i>
                     访问控制
+                </div>
+            </label>
+        </li>
+        <li>
+            <label class="koolclash-nav-control koolclash-nav-label" for="koolclash-nav-control">
+                <div class="koolclash-nav-tab">
+                    <i class="icon-lock"></i>
+                    设备控制
                 </div>
             </label>
         </li>
@@ -463,6 +478,19 @@
                     </div>
                 </div>
             </div>			
+        </div>
+        <div id="koolclash-content-control">
+            <div class="box">
+                <div class="heading" >设备访问控制</div>
+                <div class="content">
+                    <div class="tabContent">
+                        <table class="line-table" cellspacing=1 id="koolclash-acl"></table>
+                    </div>
+                    <div class="koolclash-btn-container">
+                        <button type="button" id="koolclash-btn-submit-device-control" onclick="SubmitControl();" class="btn btn-primary">提交</button>
+                    </div>
+                </div>
+            </div>		
         </div>
         <div id="koolclash-content-log">
             <div class="box">
@@ -631,12 +659,226 @@
             }
         };
 
-		var option_time_hour = [];
-		for(var i = 0; i < 24; i++){
-			option_time_hour[i] = [i, "每天" + i + "点"];
-		};
+        var option_time_hour = [];
+        for(var i = 0; i < 24; i++){
+            option_time_hour[i] = [i, "每天" + i + "点"];
+        };
 
-		var dbus;
+        var dbus;
+        get_arp_list();
+        get_dbus_data();
+        var options_type = [];
+        var options_list = [];
+        var option_arp_list = [];
+        var option_arp_local = [];
+        var option_arp_web = [];
+        var kcacl = new TomatoGrid();
+
+        kcacl.exist = function( f, v ) {
+            var data = this.getAllData();
+            for ( var i = 0; i < data.length; ++i ) {
+                if ( data[ i ][ f ] == v ) return true;
+            }
+            return false;
+        }
+        kcacl.dataToView = function( data ) {
+            if (data[0]){
+                return [ "【" + data[0] + "】", data[1], "*****************", ['不通过Clash', '通过Clash'][data[3]] ];
+            }else{
+                if (data[1]){
+                    return [ "【" + data[1] + "】", data[1], "*****************", ['不通过Clash', '通过Clash'][data[3]] ];
+                }else{
+                    if (data[2]){
+                        return [ "【" + data[2] + "】", data[1], "*****************", ['不通过Clash', '通过Clash'][data[3]] ];
+                    }
+                }
+            }
+        }
+        kcacl.fieldValuesToData = function( row ) {
+            var f = fields.getAll( row );
+            if (f[0].value){
+                return [ f[0].value, f[1].value, f[2].value, f[3].value ];
+            }else{
+                if (f[1].value){
+                    return [ f[1].value, f[1].value, f[2].value, f[3].value ];
+                }else{
+                    if (f[1].value){
+                        return [ f[2].value, f[1].value, f[2].value, f[3].value ];
+                    }
+                }	
+            }
+        }
+        kcacl.onChange = function(which, cell) {
+            return this.verifyFields((which == 'new') ? this.newEditor: this.editor, true, cell);
+        }
+        kcacl.verifyFields = function( row, quiet, cell) {
+            var f = fields.getAll( row );
+            if ( $(cell).attr("id") == "_[object HTMLTableElement]_1" ) {
+                if (f[0].value){
+                    f[1].value = option_arp_list[f[0].selectedIndex][2];
+                    f[2].value = option_arp_list[f[0].selectedIndex][3];
+                }
+            }
+            if (f[1].value && !f[2].value){
+                return v_ip( f[1], quiet );
+            }
+            if (!f[1].value && f[2].value){
+                return v_mac( f[2], quiet );
+            }
+            if (f[1].value && f[2].value){
+                return v_ip( f[1], quiet ) || v_mac( f[2], quiet );
+            }
+            if (f[0].value == "自定义"){
+                console.log("sucess!");
+                kcacl.updateUI;
+            }
+        }
+        kcacl.onAdd = function() {
+            var data;
+            this.moving = null;
+            this.rpHide();
+            if (!this.verifyFields(this.newEditor, false)) return;
+            data = this.fieldValuesToData(this.newEditor);
+            this.insertData(1, data);
+            this.disableNewEditor(false);
+            this.resetNewEditor();
+        }
+        kcacl.resetNewEditor = function() {
+            var f;
+            f = fields.getAll( this.newEditor );
+            ferror.clearAll( f );
+            f[ 0 ].value = '';
+            f[ 1 ].value   = '';
+            f[ 2 ].value   = '';
+            f[ 3 ].value   = '0';
+        }
+        kcacl.setup = function() {
+            this.init( 'koolclash-acl', 'delete', 250, [
+                { type: 'select', maxlen: 25, options:option_arp_list },
+                { type: 'text', maxlen: 25 },
+                { type: 'text', maxlen: 25 },
+                { type: 'select', maxlen: 20, options:[['0', '不通过Clash'], ['1', '通过Clash']], value: window.dbus.koolclash_arp_list || '0' }
+            ] );
+            this.headerSet( [ '主机别名', 'IP地址', 'MAC地址', '模式控制' ] );
+            if(typeof(dbus["koolclash_acl_list"]) != "undefined" ){
+                var s = dbus["koolclash_acl_list"].split( '>' );
+            }else{
+                var s =""
+                return false;
+            }
+            for ( var i = 0; i < s.length; ++i ) {
+                var t = s[ i ].split( '<' );
+                if ( t.length == 4 ) this.insertData( -1, t );
+            }
+            this.showNewEditor();
+            this.resetNewEditor();
+        }
+        function get_arp_list() {
+            var id = parseInt(Math.random() * 100000000);
+            var postData1 = {"id": id, "method": "koolclash_getarp.sh", "params":[], "fields": ""};
+            $.ajax({
+                type: "POST",
+                url: "/_api/",
+                async: true,
+                cache: false,
+                data: JSON.stringify(postData1),
+                dataType: "json",
+                success: function(response){
+                    if (response){
+                        get_dbus_data();
+                        var s2 = dbus["koolclash_arp"].split( '>' );
+                        for ( var i = 0; i < s2.length; ++i ) {
+                            option_arp_local[i] = [s2[ i ].split( '<' )[0],"【" + s2[ i ].split( '<' )[0] + "】",s2[ i ].split( '<' )[1],s2[ i ].split( '<' )[2]];
+                        }
+                        var s3 = dbus["koolclash_acl_list"].split( '>' );
+                        for ( var i = 0; i < s3.length -1; ++i ) {
+                            option_arp_web[i] = [s3[ i ].split( '<' )[0],"【" + s3[ i ].split( '<' )[0] + "】",s3[ i ].split( '<' )[1],s3[ i ].split( '<' )[2]];
+                        }
+                        //option_arp_web[s2.length -1] = ["自定义", "【自定义设备】","",""];
+                        option_arp_web[s3.length -1] = ["自定义", "【自定义设备】","",""];
+                        option_arp_list = unique_array(option_arp_local.concat( option_arp_web ));
+                        kcacl.setup();
+                    }
+                },
+                error:function(){
+                    get_dbus_data();
+                    var s2 = dbus["koolclash_arp"].split( '>' );
+                    for ( var i = 0; i < s2.length; ++i ) {
+                        option_arp_local[i] = [s2[ i ].split( '<' )[0],"【" + s2[ i ].split( '<' )[0] + "】",s2[ i ].split( '<' )[1],s2[ i ].split( '<' )[2]];
+                    }
+                    var s3 = dbus["koolclash_acl_list"].split( '>' );
+                    for ( var i = 0; i < s3.length -1; ++i ) {
+                        option_arp_web[i] = [s3[ i ].split( '<' )[0],"【" + s3[ i ].split( '<' )[0] + "】",s3[ i ].split( '<' )[1],s3[ i ].split( '<' )[2]];
+                    }
+                    //option_arp_web[s2.length -1] = ["自定义", "【自定义设备】","",""];
+                    option_arp_web[s3.length -1] = ["自定义", "【自定义设备】","",""];
+                    option_arp_list = unique_array(option_arp_local.concat( option_arp_web ));
+                    kcacl.setup();
+                },
+                timeout:1000
+            });
+        }
+
+        function unique_array(array) {
+            var r = [];
+            for(var i = 0, l = array.length; i < l; i++) {
+                for(var j = i + 1; j < l; j++)
+                if (array[i][0] === array[j][0]) j = ++i;
+                    r.push(array[i]);
+            }
+            return r.sort();
+        }
+		
+        function get_dbus_data() {
+            $.ajax({
+                type: "GET",
+                url: "/_api/koolclash_",
+                dataType: "json",
+                async: false,
+                success: function(data){
+                    dbus = data.result[0];
+                }
+            });
+        }
+
+        function SubmitControl() {
+            var data2 = kcacl.getAllData();
+            var acllist = '';
+            if(data2.length > 0){
+				for ( var i = 0; i < data2.length; ++i ) {
+                    acllist += data2[ i ].join( '<' ) + '>';
+                }
+                dbus["koolclash_acl_list"] = acllist;
+            }else{
+                dbus["koolclash_acl_list"] = " ";
+            }
+            KoolClash.disableAllButton();
+            E('koolclash-btn-submit-device-control').innerHTML = `提交 Clash 设备控制`;
+            var id3 = parseInt(Math.random() * 100000000);
+            var postData3 = {"id": id3, "method": "koolclash_config.sh", "params":["acl"], "fields": dbus};
+            $.ajax({
+                url: "/_api/",
+                cache: false,
+                type: "POST",
+                dataType: "json",
+                data: JSON.stringify(postData3),
+                success: (resp) => {
+                    E('koolclash-btn-submit-device-control').innerHTML = `提交成功，下次启动 Clash 时生效！`;
+                    setTimeout(() => {
+                        KoolClash.enableAllButton();
+                        E('koolclash-btn-submit-device-control').innerHTML = '提交';
+                    }, 2500)
+                },
+                error: () => {
+                    E('koolclash-btn-submit-device-control').innerHTML = `提交失败，请重试！`;
+                    setTimeout(() => {
+                        KoolClash.enableAllButton();
+                        E('koolclash-btn-submit-device-control').innerHTML = '提交';
+                    }, 2500)
+                }
+            });
+        }
+
         var KoolClash = {
             // KoolClash.renderUI()
             // 创建 KoolClash 界面
