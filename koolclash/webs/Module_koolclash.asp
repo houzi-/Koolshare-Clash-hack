@@ -792,7 +792,7 @@
                         }
                         var s3 = dbus["koolclash_acl_list"].split( '>' );
                         for ( var i = 0; i < s3.length -1; ++i ) {
-                            option_arp_web[i] = [s3[ i ].split( '<' )[0],"【" + s3[ i ].split( '<' )[0] + "】",s3[ i ].split( '<' )[1],s3[ i ].split( '<' )[2]];
+                            option_arp_web[i] = [s2[ i ].split( '<' )[0],"【" + s2[ i ].split( '<' )[0] + "】",s2[ i ].split( '<' )[1],s2[ i ].split( '<' )[2]];
                         }
                         //option_arp_web[s2.length -1] = ["自定义", "【自定义设备】","",""];
                         option_arp_web[s3.length -1] = ["自定义", "【自定义设备】","",""];
@@ -808,7 +808,7 @@
                     }
                     var s3 = dbus["koolclash_acl_list"].split( '>' );
                     for ( var i = 0; i < s3.length -1; ++i ) {
-                        option_arp_web[i] = [s3[ i ].split( '<' )[0],"【" + s3[ i ].split( '<' )[0] + "】",s3[ i ].split( '<' )[1],s3[ i ].split( '<' )[2]];
+                        option_arp_web[i] = [s2[ i ].split( '<' )[0],"【" + s2[ i ].split( '<' )[0] + "】",s2[ i ].split( '<' )[1],s2[ i ].split( '<' )[2]];
                     }
                     //option_arp_web[s2.length -1] = ["自定义", "【自定义设备】","",""];
                     option_arp_web[s3.length -1] = ["自定义", "【自定义设备】","",""];
@@ -863,7 +863,7 @@
                 dataType: "json",
                 data: JSON.stringify(postData3),
                 success: (resp) => {
-                    E('koolclash-btn-submit-device-control').innerHTML = `提交成功，下次启动 Clash 时生效！`;
+                    E('koolclash-btn-submit-device-control').innerHTML = `提交成功，Clash 设备控制已生效！`;
                     setTimeout(() => {
                         KoolClash.enableAllButton();
                         E('koolclash-btn-submit-device-control').innerHTML = '提交';
