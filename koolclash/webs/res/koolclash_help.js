@@ -2,7 +2,7 @@
  * koolclash_help.js | @houzi-
  * https://github.com/houzi-/Koolshare-Clash-hack
  */
-function koolclash_helpSwitchMode(){
+function koolclash_helpSwitchMode() {
     layer.open({
         type: 0,
         shade: 0.1,
@@ -19,7 +19,7 @@ function koolclash_helpSwitchMode(){
     });
 }
 
-function koolclash_helpFlow(){
+function koolclash_helpFlow() {
     layer.open({
         type: 0,
         shade: 0.1,
@@ -36,7 +36,24 @@ function koolclash_helpFlow(){
     });
 }
 
-function koolclash_helpSubConverter(){
+function koolclash_helpCHN() {
+    layer.open({
+        type: 0,
+        shade: 0.1,
+        skin: 'layui-layer-lan',
+        scrollbar: 0,
+        title: 'Clash 绕过大陆IP【指南】',
+        area: ['460px', '280px'],
+        fixed: false, //不固定
+        resize: false, //禁止拉伸
+        maxmin: true,
+        shadeClose: 1,
+        id: 'LAY_switch_rule_mode',
+        content: '<b>● 开关显示绿色为开启状态、灰色为关闭状态</b><br><b>● 绕过大陆IP基于 iptables 权限高于 Clash 分流规则集</b><br><b>● 使用【访问控制】功能时，请关闭绕过大陆IP</b><br><b>● 绕过大陆IP是基于 CHNRoute 来进行分流</b><br><b>● 绕过大陆IP和 Clash 内置的分流规则一起配合使用，分流更加精准</b>',
+    });
+}
+
+function koolclash_helpSubConverter() {
     layer.open({
         type: 0,
         shade: 0.1,
@@ -53,7 +70,7 @@ function koolclash_helpSubConverter(){
     });
 }
 
-function koolclash_CheckIP(){
+function koolclash_CheckIP() {
     layer.open({
         type: 2,
         //skin: 'myskin',
