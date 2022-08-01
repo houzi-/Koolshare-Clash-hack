@@ -275,6 +275,64 @@
             margin-top: 16px;
         }*/
 
+        /* Switch开关样式 */
+        /* 必须是input为 checkbox class 添加 switch 才能实现以下效果 */
+        input[type='checkbox'].switch {
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            position: relative;
+            width: 40px;
+            height: 20px;
+            background: #ccc;
+            border-radius: 10px;
+            transition: border-color .3s, background-color .3s;
+        }
+
+        input[type='checkbox'].switch::after {
+            content: '';
+            display: inline-block;
+            width: 1rem;
+            height:1rem;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0, 0, 2px, #999;
+            transition:.4s;
+            top: 1px;
+            position: absolute;
+            left: 2px;
+        }
+
+        input[type='checkbox'].switch:checked {
+            background: rgb(19, 206, 102);
+        }
+        /* 当input[type=checkbox]被选中时：伪元素显示下面样式 位置发生变化 */
+        input[type='checkbox'].switch:checked::after {
+            content: '';
+            position: absolute;
+            left: 55%;
+            top: 1px;
+        }
+
+        #koolclash-config > fieldset:nth-child(4) > div {
+            padding-top: 12.45;
+            padding-bottom: 0px;
+            padding-top: 13.5;
+            padding-top: 13.5;
+            padding-top: 11px;
+        }
+
+        input#koolclash-return-chnip.switch {
+            color: #fafafa;
+            margin: 0;
+            line-height: normal;
+            font-size: 10pt;
+            font-family: "Segoe UI", "Roboto", sans-serif, Helvetica, Arial, sans-serif;
+            border: 1px solid #fafafa;
+            vertical-align: baseline;
+        }
+
     </style>
     <script>
         var softcenter = 0;
@@ -935,6 +993,10 @@
                         title: '<b style="cursor: pointer;" href="javascript:void(0);" onclick="koolclash_helpFlow();">Clash 订阅流量信息</b>',
 						name: 'koolclash-flow-show',
                         suffix: '<span id="flow_status" style="float:right;margin-right:5px;margin-top:0px;" class="td left"><div id="flow_status_text" style="font-size: 12px;min-width: 270px;" class="flow-progressbar"><div></div></div></span>'
+                    },
+                    {
+                        title: '<b style="cursor: pointer;" href="javascript:void(0);" onclick="koolclash_helpCHN();">Clash 绕过大陆IP</b>',
+                        suffix: `<input type="checkbox" id="koolclash-return-chnip" class="switch" onchange="KoolClash.ReturnChnIP()"></input>`
                     },					
                     {
                         title: '<b>Clash 配置上传</b>',
@@ -1198,7 +1260,7 @@ dns:
                     i.removeAttribute('disabled');
                 }
             },
-            switchConfigRule: () => {			
+            switchConfigRule: () => {
                 let id = parseInt(Math.random() * 100000000);
                 let postData = JSON.stringify({
                     id,
@@ -1222,7 +1284,7 @@ dns:
                     },
                 });	
             },
-            switchConfigGlobal: () => {			
+            switchConfigGlobal: () => {
                 let id = parseInt(Math.random() * 100000000);
                 let postData = JSON.stringify({
                     id,
@@ -1246,7 +1308,7 @@ dns:
                     },
                 });	
             },
-            switchConfigDirect: () => {			
+            switchConfigDirect: () => {
                 let id = parseInt(Math.random() * 100000000);
                 let postData = JSON.stringify({
                     id,
@@ -1269,7 +1331,37 @@ dns:
                         }
                     },
                 });	
-            },			
+            },
+            ReturnChnIP: () => {
+                let id = parseInt(Math.random() * 100000000);
+                let postData = JSON.stringify({
+                    id,
+                    "method": "koolclash_return_chnip.sh",
+                    "params": [],
+                    "fields": ""
+                });
+				
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/_api/",
+                    async: true,
+                    data: postData,
+                    dataType: "json",
+                    success: (resp) => {
+                        if (resp.result === 'chnip_on') {
+                            $('#koolclash-return-chnip').attr('checked', '');
+                            setTimeout(() => {
+                                alert("已切换至绕过大陆IP！");
+                            }, 1000)
+                        } else if (resp.result === 'chnip_off') {
+                            setTimeout(() => {
+                                alert("已关闭绕过大陆IP！");
+                            }, 1000)
+                        }
+                    },
+                });	
+            },
             submitExternalControl: () => {
                 KoolClash.disableAllButton();
 
@@ -1324,7 +1416,7 @@ dns:
                     success: (resp) => {
                         if (resp.result === 'notfound') {
 							E('koolclash-btn-download').innerHTML = 'Clash 配置文件找不到了！请重试！';
-                        }else {
+                        } else {
                             let a = document.createElement('A');
                             a.href = "/files/config.yaml";
                             a.download = 'config.yaml';
@@ -2194,6 +2286,9 @@ ${Base64.decode(data.firewall_white_ip)}
                             if (window.dbus.koolclash_switch_run_mode === '1') {
                                 $('#fake-ip-enhanced').attr('checked', '');
                             }
+                            if (window.dbus.koolclash_return_chnip === '1') {
+                                $('#koolclash-return-chnip').attr('checked', '');
+                            }							
                         }
                     })
             },
