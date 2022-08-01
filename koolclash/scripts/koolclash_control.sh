@@ -412,8 +412,10 @@ apply_nat_rules() {
     # IP Whitelist
     [ "$(iptables -t nat -C koolclash -m set --match-set koolclash_white dst -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
     iptables -t nat -A koolclash -m set --match-set koolclash_white dst -j RETURN
-    [ "$(iptables -t nat -C koolclash -m set --match-set koolclash_chn_white dst -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
-    iptables -t nat -A koolclash -m set --match-set koolclash_chn_white dst -j RETURN
+    if [ "$koolclash_return_chnip" == "1" ]; then
+        [ "$(iptables -t nat -C koolclash -m set --match-set koolclash_chn_white dst -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+        iptables -t nat -A koolclash -m set --match-set koolclash_chn_white dst -j RETURN
+    fi
     [ "$(iptables -t nat -C koolclash -m set --match-set koolclash_white_ac_ips src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
     iptables -t nat -A koolclash -m set --match-set koolclash_white_ac_ips src -j RETURN
     [ "$(iptables -t nat -C koolclash -m set --match-set koolclash_white_ac_macs src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
@@ -451,8 +453,10 @@ apply_nat_rules() {
     # IP Whitelist
     [ "$(iptables -t nat -C koolclash_output -m set --match-set koolclash_white dst -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
     iptables -t nat -A koolclash_output -m set --match-set koolclash_white dst -j RETURN
-    [ "$(iptables -t nat -C koolclash_output -m set --match-set koolclash_chn_white dst -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
-    iptables -t nat -A koolclash_output -m set --match-set koolclash_chn_white dst -j RETURN
+    if [ "$koolclash_return_chnip" == "1" ]; then
+        [ "$(iptables -t nat -C koolclash_output -m set --match-set koolclash_chn_white dst -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+        iptables -t nat -A koolclash_output -m set --match-set koolclash_chn_white dst -j RETURN
+    fi
     [ "$(iptables -t nat -C koolclash_output -m set --match-set koolclash_white_ac_ips dst -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
     iptables -t nat -A koolclash_output -m set --match-set koolclash_white_ac_ips dst -j RETURN
     [ "$(iptables -t nat -C koolclash_output -m set --match-set koolclash_white_ac_macs dst -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
@@ -467,8 +471,10 @@ apply_nat_rules() {
     # IP Whitelist
     [ "$(iptables -t mangle -C koolclash -m set --match-set koolclash_white dst -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
     iptables -t mangle -A koolclash -m set --match-set koolclash_white dst -j RETURN
-    [ "$(iptables -t mangle -C koolclash -m set --match-set koolclash_chn_white dst -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
-    iptables -t mangle -A koolclash -m set --match-set koolclash_chn_white dst -j RETURN
+    if [ "$koolclash_return_chnip" == "1" ]; then
+        [ "$(iptables -t mangle -C koolclash -m set --match-set koolclash_chn_white dst -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+        iptables -t mangle -A koolclash -m set --match-set koolclash_chn_white dst -j RETURN
+    fi
     [ "$(iptables -t mangle -C koolclash -m set --match-set koolclash_white_ac_ips src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
     iptables -t mangle -A koolclash -m set --match-set koolclash_white_ac_ips src -j RETURN
     [ "$(iptables -t mangle -C koolclash -m set --match-set koolclash_white_ac_macs src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
