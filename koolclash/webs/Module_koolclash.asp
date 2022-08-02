@@ -535,7 +535,25 @@
                         <button type="button" id="koolclash-btn-submit-white-domain" onclick="KoolClash.acl.submitWhiteDOMAIN();" class="btn btn-primary">提交</button>
                     </div>
                 </div>
-            </div>			
+            </div>
+            <div class="box">
+                <div class="heading" style="margin-top: -15px;"></div>
+                <div class="content">
+                    <div id="koolclash-firewall-black-ipset"></div>
+                    <div class="koolclash-btn-container">
+                        <button type="button" id="koolclash-btn-submit-black-ip" onclick="KoolClash.acl.submitBlackIP();" class="btn btn-primary">提交</button>
+                    </div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="heading" style="margin-top: -15px;"></div>
+                <div class="content">
+                    <div id="koolclash-firewall-black-ipset-domain"></div>
+                    <div class="koolclash-btn-container">
+                        <button type="button" id="koolclash-btn-submit-black-domain" onclick="KoolClash.acl.submitBlackDOMAIN();" class="btn btn-primary">提交</button>
+                    </div>
+                </div>
+            </div>
         </div>
         <div id="koolclash-content-control">
             <div class="box">
@@ -950,12 +968,13 @@
                     {
                         title: '<b>运行模式</b>',
 						name: 'koolclash_switch_run_mode',
-						suffix: '<span id="radio-run-mode" class="radio-button-2" style="display: inline-block;"><input type="radio" id="fake-ip-enhanced" name="radios-1" size="0"><label for="fake-ip-enhanced">Fake-IP（增强）</label></span>',
+						suffix: '<span id="radio-run-mode" class="radio-button-2" style="display: inline-block;"><input type="radio" id="fake-ip-enhanced" name="radios-1" size="0"><label for="fake-ip-enhanced">Fake-IP（增强）</label></span>'
 					},
                     {
                         title: '<b style="cursor: pointer;" href="javascript:void(0);" onclick="koolclash_helpSwitchMode();">代理模式</b>',
 						name: 'koolclash_switch_rule_mode',
 						suffix: '<span id="radio-mode" class="radio-button-1" style="display: inline-block;"><input type="radio" id="rule" name="radios" onclick="KoolClash.switchConfigRule();" size="0"><label for="rule">规则</label><input type="radio" id="global" name="radios" onclick="KoolClash.switchConfigGlobal();" size="0"><label for="global">全局</label><input type="radio" id="direct" name="radios" onclick="KoolClash.switchConfigDirect();" size="0"><label for="direct">直连</label></span>',
+                        help: '请点击【代理模式】查看帮助信息'
                     },
                     {
                         title: '<b>Clash 看门狗进程状态</b>',
@@ -992,12 +1011,14 @@
                     {
                         title: '<b style="cursor: pointer;" href="javascript:void(0);" onclick="koolclash_helpFlow();">Clash 订阅流量信息</b>',
 						name: 'koolclash-flow-show',
-                        suffix: '<span id="flow_status" style="float:right;margin-right:5px;margin-top:0px;" class="td left"><div id="flow_status_text" style="font-size: 12px;min-width: 270px;" class="flow-progressbar"><div></div></div></span>'
+                        suffix: '<span id="flow_status" style="float:right;margin-right:5px;margin-top:0px;" class="td left"><div id="flow_status_text" style="font-size: 12px;min-width: 270px;" class="flow-progressbar"><div></div></div></span>',
+                        help: '请点击【Clash 订阅流量信息】查看帮助信息'
                     },
                     {
                         title: '<b style="cursor: pointer;" href="javascript:void(0);" onclick="koolclash_helpCHN();">Clash 绕过大陆IP</b>',
-                        suffix: `<input type="checkbox" id="koolclash-return-chnip" class="switch" onchange="KoolClash.ReturnChnIP()"></input>`
-                    },					
+                        suffix: `<input type="checkbox" id="koolclash-return-chnip" class="switch" onchange="KoolClash.ReturnChnIP()"></input>`,
+                        help: '请点击【Clash 绕过大陆IP】查看帮助信息'
+                    },
                     {
                         title: '<b>Clash 配置上传</b>',
                         suffix: '<input type="file" id="koolclash-file-config" size="50"><button id="koolclash-btn-upload" type="button" onclick="KoolClash.submitClashConfig();" class="btn btn-primary">上传配置文件</button>'
@@ -1007,12 +1028,13 @@
                         suffix: '<button id="koolclash-btn-download" type="button" onclick="KoolClash.downloadClashConfig();" class="btn btn-primary">导出配置文件</button>'
                     },
                     {
-                        title: '<b style="cursor: pointer;" href="javascript:void(0);" onclick="koolclash_helpSubConverter();">Clash 订阅转换 URL</b><br><small style="color:red;">请注意！务必详读使用指南！</small>',
+                        title: '<b style="cursor: pointer;" href="javascript:void(0);" onclick="koolclash_helpSubConverter();">Clash 订阅转换 URL</b>',
                         name: 'koolclash_config_subconverter_url',
                         type: 'password',
                         peekaboo: 1,
                         value: window.dbus.koolclash_subconverter_url || '',
-                        placeholder: 'https://api.tshl.cc/link/adfjkdlfjsdfje'
+                        placeholder: 'https://api.tshl.cc/link/adfjkdlfjsdfje',
+                        help: '请点击【Clash 订阅转换 URL】查看帮助信息'
                     },
                 ]);
                 $('#koolclash-config-dns').forms([
@@ -1048,6 +1070,24 @@
                         name: 'koolclash_firewall_white_ipset_domain',
                         type: 'textarea',
                         value: Base64.decode(window.dbus.koolclash_firewall_whitedomain_base64 || '') || '',
+                        style: 'width: 80%; height: 150px;'
+                    },
+                ]);
+                $('#koolclash-firewall-black-ipset').forms([
+                    {
+                        title: '<b>IP/CIDR 黑名单</b><br><br><p style="color: #999">通过 Clash 的 IP/CIDR 外网地址，一行一个，例如：<br>119.29.29.29<br>210.2.4.0/24</p>',
+                        name: 'koolclash_firewall_black_ipset',
+                        type: 'textarea',
+                        value: Base64.decode(window.dbus.koolclash_firewall_blackip_base64 || '') || '',
+                        style: 'width: 80%; height: 150px;'
+                    },
+                ]);
+                $('#koolclash-firewall-black-ipset-domain').forms([
+                    {
+                        title: '<b>域名黑名单</b><br><br><p style="color: #999">通过 Clash 的域名外网地址，一行一个，例如：<br>google.com<br>facebook.com</p>',
+                        name: 'koolclash_firewall_black_ipset_domain',
+                        type: 'textarea',
+                        value: Base64.decode(window.dbus.koolclash_firewall_blackdomain_base64 || '') || '',
                         style: 'width: 80%; height: 150px;'
                     },
                 ]);
@@ -1612,11 +1652,12 @@ dns:
                         } else {
                             Msg.hide('warning');
                             Msg.show('success', 'Clash 成功启动！');
+                            Msg.show('error', '请在【设备控制】页面添加需要代理的设备，默认所有设备不走代理！');							
                             Msg.show('warning', '请不要刷新或关闭页面，务必等待页面自动刷新！<span id="koolclash-wait-time"></span>');
-                            KoolClash.tminus(5);
+                            KoolClash.tminus(6);
                             setTimeout(() => {
                                 window.location.reload();
-                            }, 5000)
+                            }, 6000)
                         }
                     },
                     error: () => {
@@ -2089,6 +2130,8 @@ ${Base64.decode(Base64.decode(data.iptables_nat_clash_dns))}
 ${Base64.decode(data.chromecast_nu)}
 ---------------------- ipset 白名单 IP 列表 ------------------------
 ${Base64.decode(data.firewall_white_ip)}
+------------------------- ipset 集合列表 ---------------------------
+${Base64.decode(data.firewall_ipset_list)}
 ===================================================================
 `;
                     })
@@ -2163,7 +2206,77 @@ ${Base64.decode(data.firewall_white_ip)}
                             }, 2500)
                         }
                     });
-                },				
+                },
+                submitBlackIP: () => {
+                    KoolClash.disableAllButton();
+                    let data = Base64.encode(E('_koolclash_firewall_black_ipset').value);
+
+                    E('koolclash-btn-submit-black-ip').innerHTML = `正在提交`;
+                    let id = parseInt(Math.random() * 100000000),
+                        postData = JSON.stringify({
+                            id,
+                            "method": "koolclash_firewall.sh",
+                            "params": ['black', `${data}`],
+                            "fields": ""
+                        });
+
+                    $.ajax({
+                        type: "POST",
+                        cache: false,
+                        url: "/_api/",
+                        data: postData,
+                        dataType: "json",
+                        success: (resp) => {
+                            E('koolclash-btn-submit-black-ip').innerHTML = `提交成功，下次启动 Clash 时生效！`;
+                            setTimeout(() => {
+                                KoolClash.enableAllButton();
+                                E('koolclash-btn-submit-black-ip').innerHTML = '提交';
+                            }, 2500)
+                        },
+                        error: () => {
+                            E('koolclash-btn-submit-black-ip').innerHTML = `提交失败，请重试！`;
+                            setTimeout(() => {
+                                KoolClash.enableAllButton();
+                                E('koolclash-btn-submit-black-ip').innerHTML = '提交';
+                            }, 2500)
+                        }
+                    });
+                },
+                submitBlackDOMAIN: () => {
+                    KoolClash.disableAllButton();
+                    let data = Base64.encode(E('_koolclash_firewall_black_ipset_domain').value);
+
+                    E('koolclash-btn-submit-black-domain').innerHTML = `正在提交`;
+                    let id = parseInt(Math.random() * 100000000),
+                        postData = JSON.stringify({
+                            id,
+                            "method": "koolclash_firewall.sh",
+                            "params": ['black-domain', `${data}`],
+                            "fields": ""
+                        });
+
+                    $.ajax({
+                        type: "POST",
+                        cache: false,
+                        url: "/_api/",
+                        data: postData,
+                        dataType: "json",
+                        success: (resp) => {
+                            E('koolclash-btn-submit-black-domain').innerHTML = `提交成功，下次启动 Clash 时生效！`;
+                            setTimeout(() => {
+                                KoolClash.enableAllButton();
+                                E('koolclash-btn-submit-black-domain').innerHTML = '提交';
+                            }, 2500)
+                        },
+                        error: () => {
+                            E('koolclash-btn-submit-black-domain').innerHTML = `提交失败，请重试！`;
+                            setTimeout(() => {
+                                KoolClash.enableAllButton();
+                                E('koolclash-btn-submit-black-domain').innerHTML = '提交';
+                            }, 2500)
+                        }
+                    });
+                },
             },
             submitWatchdog: () => {
                 KoolClash.disableAllButton();
