@@ -893,7 +893,7 @@
                             option_arp_web[i] = [s2[ i ].split( '<' )[0],"【" + s2[ i ].split( '<' )[0] + "】",s2[ i ].split( '<' )[1],s2[ i ].split( '<' )[2]];
                         }
                         //option_arp_web[s2.length -1] = ["自定义", "【自定义设备】","",""];
-                        option_arp_web[s3.length -1] = ["自定义", "【自定义设备】","","",""];
+                        option_arp_web[s3.length -1] = ["自定义", "【自定义设备】","",""];
                         option_arp_list = unique_array(option_arp_local.concat( option_arp_web ));
                         kcacl.setup();
                     }
@@ -909,7 +909,7 @@
                         option_arp_web[i] = [s2[ i ].split( '<' )[0],"【" + s2[ i ].split( '<' )[0] + "】",s2[ i ].split( '<' )[1],s2[ i ].split( '<' )[2]];
                     }
                     //option_arp_web[s2.length -1] = ["自定义", "【自定义设备】","",""];
-                    option_arp_web[s3.length -1] = ["自定义", "【自定义设备】","","",""];
+                    option_arp_web[s3.length -1] = ["自定义", "【自定义设备】","",""];
                     option_arp_list = unique_array(option_arp_local.concat( option_arp_web ));
                     kcacl.setup();
                 },
