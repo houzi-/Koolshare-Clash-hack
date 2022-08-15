@@ -17,15 +17,30 @@ white-domain)
     dbus set koolclash_firewall_whitedomain_base64=$3
     http_response 'ok'
     ;;
+black)
+    dbus set koolclash_firewall_blackip_base64=$3
+    dbus set koolclash_firewall_blackip_enable=1
+    http_response 'ok'
+    ;;
+black-domain)
+    dbus set koolclash_firewall_blackdomain_base64=$3
+    dbus set koolclash_firewall_blackdomain_enable=1
+    http_response 'ok'
+    ;;
 default)
-#    # 0 不通过 Clash; 1 通过 Clash
-#    dbus set koolclash_firewall_default_mode=$3
-#    # ['80443', '80,443'],
-#    # ['1',     '常用端口'],
-#    # ['all',   '全部端口'],
-#    # ['0',     '自定义端口']
-#    dbus set koolclash_firewall_default_port_mode=$4
-#    dbus set koolclash_firewall_default_port_user=$5
+    # 0 不通过 Clash; 1 通过 Clash
+    dbus set koolclash_firewall_default_mode=$3
+    # ['80443', '80,443'],
+    # ['1',     '常用端口'],
+    # ['all',   '全部端口'],
+    # ['0',     '自定义端口']
+    dbus set koolclash_firewall_default_port_mode=$4
+    # ['off',   '关闭'],
+    # ['80443', '80,443'],
+    # ['1',     '常用端口'],
+    # ['0',     '自定义端口']
+    dbus set koolclash_firewall_base_port_mode=$5
+    dbus set koolclash_firewall_default_port_user=$6
     http_response 'ok'
     ;;
 esac
