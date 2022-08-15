@@ -271,9 +271,9 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        /*#koolclash-acl-default-panel {
+        #koolclash-acl-port-panel {
             margin-top: 16px;
-        }*/
+        }
 
         /* Switch开关样式 */
         /* 必须是input为 checkbox class 添加 switch 才能实现以下效果 */
@@ -518,6 +518,28 @@
             </div>
         </div>
         <div id="koolclash-content-firewall">
+            <div class="box">
+                <!--<div class="heading">访问控制主机</div>
+                <div class="content">
+                    <div class="tabContent">
+                        <table class="line-table" cellspacing="1" id="koolclash-acl-panel"></table>
+                    </div>
+                </div>-->
+                <div class="heading">端口控制</div>
+                <div class="content">
+                    <!--<p style="color: red; font-weight: 600">功能开发中，尚不可用！</p>-->
+                    <p>
+                        除了设置的端口控制外，其它端口都将走默认的模式。
+                        <br>
+                        常用端口包括 21 22 80 8080 8880 2052 2082 2086 2095 443 2053 2083 2087 2096 8443
+                    </p>
+                    <div id="koolclash-acl-port-panel" class="section"></div>
+                    <br>
+                    <div class="koolclash-btn-container">
+                        <button type="button" id="koolclash-btn-submit-port" onclick="KoolClash.acl.submitPort();" class="btn btn-primary">提交</button>
+                    </div>
+                </div>
+            </div>
             <div class="box">
                 <div class="heading" style="margin-top: -15px;"></div>
                 <div class="content">
@@ -824,16 +846,16 @@
             f = fields.getAll( this.newEditor );
             ferror.clearAll( f );
             f[ 0 ].value = '';
-            f[ 1 ].value   = '';
-            f[ 2 ].value   = '';
-            f[ 3 ].value   = '0';
+            f[ 1 ].value = '';
+            f[ 2 ].value = '';
+            f[ 3 ].value = '0';
         }
         kcacl.setup = function() {
             this.init( 'koolclash-acl', 'delete', 250, [
                 { type: 'select', maxlen: 25, options:option_arp_list },
                 { type: 'text', maxlen: 25 },
                 { type: 'text', maxlen: 25 },
-                { type: 'select', maxlen: 20, options:[['0', '不通过Clash'], ['1', '通过Clash']], value: window.dbus.koolclash_arp_list || '0' }
+                { type: 'select', maxlen: 20, options:[['0', '不通过Clash'], ['1', '通过Clash']], value: window.dbus.koolclash_arp_list || '0' },
             ] );
             this.headerSet( [ '主机别名', 'IP地址', 'MAC地址', '模式控制' ] );
             if(typeof(dbus["koolclash_acl_list"]) != "undefined" ){
@@ -871,7 +893,7 @@
                             option_arp_web[i] = [s2[ i ].split( '<' )[0],"【" + s2[ i ].split( '<' )[0] + "】",s2[ i ].split( '<' )[1],s2[ i ].split( '<' )[2]];
                         }
                         //option_arp_web[s2.length -1] = ["自定义", "【自定义设备】","",""];
-                        option_arp_web[s3.length -1] = ["自定义", "【自定义设备】","",""];
+                        option_arp_web[s3.length -1] = ["自定义", "【自定义设备】","","",""];
                         option_arp_list = unique_array(option_arp_local.concat( option_arp_web ));
                         kcacl.setup();
                     }
@@ -887,7 +909,7 @@
                         option_arp_web[i] = [s2[ i ].split( '<' )[0],"【" + s2[ i ].split( '<' )[0] + "】",s2[ i ].split( '<' )[1],s2[ i ].split( '<' )[2]];
                     }
                     //option_arp_web[s2.length -1] = ["自定义", "【自定义设备】","",""];
-                    option_arp_web[s3.length -1] = ["自定义", "【自定义设备】","",""];
+                    option_arp_web[s3.length -1] = ["自定义", "【自定义设备】","","",""];
                     option_arp_list = unique_array(option_arp_local.concat( option_arp_web ));
                     kcacl.setup();
                 },
@@ -967,13 +989,13 @@
                     },
                     {
                         title: '<b>运行模式</b>',
-                        name: 'koolclash_switch_run_mode',
-                        suffix: '<span id="radio-run-mode" class="radio-button-2" style="display: inline-block;"><input type="radio" id="fake-ip-enhanced" name="radios-1" size="0"><label for="fake-ip-enhanced">Fake-IP（增强）</label></span>'
+						name: 'koolclash_switch_run_mode',
+						suffix: '<span id="radio-run-mode" class="radio-button-2" style="display: inline-block;"><input type="radio" id="fake-ip-enhanced" name="radios-1" size="0"><label for="fake-ip-enhanced">Fake-IP（增强）</label></span>'
 					},
                     {
                         title: '<b style="cursor: pointer;" href="javascript:void(0);" onclick="koolclash_helpSwitchMode();">代理模式</b>',
-                        name: 'koolclash_switch_rule_mode',
-                        suffix: '<span id="radio-mode" class="radio-button-1" style="display: inline-block;"><input type="radio" id="rule" name="radios" onclick="KoolClash.switchConfigRule();" size="0"><label for="rule">规则</label><input type="radio" id="global" name="radios" onclick="KoolClash.switchConfigGlobal();" size="0"><label for="global">全局</label><input type="radio" id="direct" name="radios" onclick="KoolClash.switchConfigDirect();" size="0"><label for="direct">直连</label></span>',
+						name: 'koolclash_switch_rule_mode',
+						suffix: '<span id="radio-mode" class="radio-button-1" style="display: inline-block;"><input type="radio" id="rule" name="radios" onclick="KoolClash.switchConfigRule();" size="0"><label for="rule">规则</label><input type="radio" id="global" name="radios" onclick="KoolClash.switchConfigGlobal();" size="0"><label for="global">全局</label><input type="radio" id="direct" name="radios" onclick="KoolClash.switchConfigDirect();" size="0"><label for="direct">直连</label></span>',
                         help: '请点击【代理模式】查看帮助信息'
                     },
                     {
@@ -1010,7 +1032,7 @@
                     },
                     {
                         title: '<b style="cursor: pointer;" href="javascript:void(0);" onclick="koolclash_helpFlow();">Clash 订阅流量信息</b>',
-                        name: 'koolclash-flow-show',
+						name: 'koolclash-flow-show',
                         suffix: '<span id="flow_status" style="float:right;margin-right:5px;margin-top:0px;" class="td left"><div id="flow_status_text" style="font-size: 12px;min-width: 270px;" class="flow-progressbar"><div></div></div></span>',
                         help: '请点击【Clash 订阅流量信息】查看帮助信息'
                     },
@@ -1053,6 +1075,53 @@
                         type: 'textarea',
                         value: '正在加载存储的 Clash DNS Config 配置...',
                         style: 'width: 100%; height: 200px;'
+                    },
+                ]);
+                $('#koolclash-acl-port-panel').forms([
+                    {
+                        title: '模式控制',
+                        name: 'koolclash-acl-default-mode',
+                        type: 'select',
+                        //style: select_style,
+                        options: [
+                            ['0', '不通过 Clash'],
+                            ['1', '通过 Clash']
+                        ],
+                        value: window.dbus.koolclash_firewall_default_mode || '1'
+                    },
+                    {
+                        title: '目标端口',
+                        name: 'koolclash-acl-default-port',
+                        type: 'select',
+                        //style: select_style,
+                        options: [
+                            ['80443', '80,443'],
+                            ['1', '常用端口'],
+                            ['all', '全部端口']
+                        ],
+                        value: window.dbus.koolclash_firewall_default_port_mode || 'all',
+                        help: '请点击【目标端口】查看帮助信息'
+                    },
+                    {
+                        title: '目标端口',
+                        name: 'koolclash-acl-base-port',
+                        type: 'select',
+                        //style: select_style,
+                        options: [
+                            ['off', '关闭'],
+                            ['80443', '80,443'],
+                            ['1', '常用端口'],
+                            ['0', '自定义端口']
+                        ],
+                        value: window.dbus.koolclash_firewall_base_port_mode || 'off',
+                        help: '请点击【目标端口】查看帮助信息'
+                    },
+                    {
+                        title: '&nbsp;',
+                        name: 'koolclash-acl-default-port-user',
+                        type: 'textarea',
+                        value: Base64.decode(window.dbus.koolclash_firewall_default_port_user || '') || '',
+                        style: 'width: 100%; height: 50px;',
                     },
                 ]);
                 $('#koolclash-firewall-ipset').forms([
@@ -1100,7 +1169,7 @@
                             ['0', '禁用'],
                             ['1', '开启']
                         ],
-                        suffix: '<button type="button" id="koolclash-btn-submit-watchdog" onclick="KoolClash.submitWatchdog();" class="btn btn-primary">提交</button>',
+                        suffix: '<span> &nbsp;&nbsp;</span><button type="button" id="koolclash-btn-submit-watchdog" onclick="KoolClash.submitWatchdog();" class="btn btn-primary">提交</button>',
                         value: window.dbus.koolclash_watchdog_enable || '0',
                     },
                 ]);
@@ -1126,11 +1195,33 @@
                     },
                 ]);				
 
-                /*if (E('_koolclash-acl-default-port').value === '0') {
+                if (E('_koolclash-select-update-sub').value === '0') {
+                    $('#_koolclash-select-update-sub-time').hide();
+                } else if (E('_koolclash-select-update-sub').value === '1') {
+                    $('#_koolclash-select-update-sub-time').show();
+                }
+
+                if (E('_koolclash-acl-default-mode').value === '0') {
+                    $('#koolclash-acl-port-panel > fieldset:nth-child(3)').show();
+                    $('#koolclash-acl-port-panel > fieldset:nth-child(2)').hide();
+                    $('#_koolclash-acl-default-port-user').show();
+                } else if (E('_koolclash-acl-default-mode').value === '1') {
+                    $('#koolclash-acl-port-panel > fieldset:nth-child(2)').show();
+                    $('#koolclash-acl-port-panel > fieldset:nth-child(3)').hide();
+                    $('#_koolclash-acl-default-port-user').hide();
+                }
+
+                //if (E('_koolclash-acl-default-port').value === '0') {
+                //    $('#_koolclash-acl-default-port-user').show();
+                //} else {
+                //    $('#_koolclash-acl-default-port-user').hide();
+                //}
+
+                if (E('_koolclash-acl-base-port').value === '0') {			
                     $('#_koolclash-acl-default-port-user').show();
                 } else {
                     $('#_koolclash-acl-default-port-user').hide();
-                }*/
+                }
 
                 $('.koolclash-nav-log').on('click', KoolClash.getLog);
             },
@@ -2137,6 +2228,38 @@ ${Base64.decode(data.firewall_ipset_list)}
                     })
             },
             acl: {
+                submitPort: () => {
+                    KoolClash.disableAllButton();
+                    document.getElementById('koolclash-btn-submit-port').innerHTML = `正在提交`;
+                    let id = parseInt(Math.random() * 100000000),
+                        postData = JSON.stringify({
+                            id,
+                            "method": "koolclash_firewall.sh",
+                            "params": ['default', `${document.getElementById('_koolclash-acl-default-mode').value}`, `${document.getElementById('_koolclash-acl-default-port').value}`, `${document.getElementById('_koolclash-acl-base-port').value}`, `${Base64.encode(document.getElementById('_koolclash-acl-default-port-user').value)}`],
+                            "fields": ""
+                        });
+                    $.ajax({
+                        type: "POST",
+                        cache: false,
+                        url: "/_api/",
+                        data: postData,
+                        dataType: "json",
+                        success: (resp) => {
+                            document.getElementById('koolclash-btn-submit-port').innerHTML = `提交成功，下次启动 Clash 时生效！`;
+                            setTimeout(() => {
+                                KoolClash.enableAllButton();
+                                document.getElementById('koolclash-btn-submit-port').innerHTML = '提交';
+                            }, 2500)
+                        },
+                        error: () => {
+                            document.getElementById('koolclash-btn-submit-port').innerHTML = `提交失败，请重试！`;
+                            setTimeout(() => {
+                                KoolClash.enableAllButton();
+                                document.getElementById('koolclash-btn-submit-port').innerHTML = '提交';
+                            }, 2500)
+                        }
+                    });
+                },
                 submitWhiteIP: () => {
                     KoolClash.disableAllButton();
                     let data = Base64.encode(E('_koolclash_firewall_white_ipset').value);
@@ -2409,6 +2532,17 @@ ${Base64.decode(data.firewall_ipset_list)}
 
         function verifyFields(r) {
             // 自定义 DNS 配置的显示隐藏
+            if (r.getAttribute('id') === '_koolclash-acl-default-mode') {
+                if (E('_koolclash-acl-default-mode').value === '0') {
+                    $('#koolclash-acl-port-panel > fieldset:nth-child(3)').show();
+                    $('#koolclash-acl-port-panel > fieldset:nth-child(2)').hide();
+                    $('#_koolclash-acl-default-port-user').show();
+                } else if (E('_koolclash-acl-default-mode').value === '1') {
+                    $('#koolclash-acl-port-panel > fieldset:nth-child(2)').show();
+                    $('#koolclash-acl-port-panel > fieldset:nth-child(3)').hide();
+                    $('#_koolclash-acl-default-port-user').hide();
+                }
+            }				
             if ($(r).attr("id") === "_koolclash-dns-config-switch") {
                 if (E('_koolclash-dns-config-switch').checked) {
                     $('#_koolclash-config-dns').show();
@@ -2424,8 +2558,23 @@ ${Base64.decode(data.firewall_ipset_list)}
                     $('#_koolclash-acl-default-port-user').show();
                 } else {
                     $('#_koolclash-acl-default-port-user').hide();
+
                 }
             }*/
+            if (r.getAttribute('id') === '_koolclash-acl-base-port') {
+                if (E('_koolclash-acl-base-port').value === '0') {
+                    $('#_koolclash-acl-default-port-user').show();
+                } else {
+                    $('#_koolclash-acl-default-port-user').hide();
+                }
+			}
+            if (r.getAttribute('id') === '_koolclash-select-update-sub') {
+                if (E('_koolclash-select-update-sub').value === '0') {
+                    $('#_koolclash-select-update-sub-time').hide();
+                } else if (E('_koolclash-select-update-sub').value === '1') {
+                    $('#_koolclash-select-update-sub-time').show();
+                }
+			}
         }
     </script>
     <script>
