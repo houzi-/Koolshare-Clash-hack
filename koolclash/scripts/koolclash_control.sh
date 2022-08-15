@@ -466,7 +466,7 @@ apply_nat_rules() {
             [ "$(iptables -t nat -C koolclash -m set --match-set koolclash_white_ports src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
             iptables -t nat -A koolclash -m set --match-set koolclash_white_ports src -j RETURN
         fi
-	else
+    else
         [ "$(iptables -t nat -C koolclash -m set --match-set koolclash_white_ports src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
         iptables -t nat -A koolclash -m set --match-set koolclash_white_ports src -j RETURN
     fi
@@ -522,7 +522,7 @@ apply_nat_rules() {
             [ "$(iptables -t nat -C koolclash_output -m set --match-set koolclash_white_ports src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
             iptables -t nat -A koolclash_output -m set --match-set koolclash_white_ports src -j RETURN
         fi
-	else
+    else
         [ "$(iptables -t nat -C koolclash_output -m set --match-set koolclash_white_ports src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
         iptables -t nat -A koolclash_output -m set --match-set koolclash_white_ports src -j RETURN
     fi
@@ -555,7 +555,7 @@ apply_nat_rules() {
             [ "$(iptables -t mangle -C koolclash -m set --match-set koolclash_white_ports src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
             iptables -t mangle -A koolclash -m set --match-set koolclash_white_ports src -j RETURN
         fi
-	else
+    else
         [ "$(iptables -t mangle -C koolclash -m set --match-set koolclash_white_ports src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
         iptables -t mangle -A koolclash -m set --match-set koolclash_white_ports src -j RETURN
     fi
