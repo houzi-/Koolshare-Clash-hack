@@ -173,6 +173,9 @@ flush_nat() {
     ipset -F koolclash_black_ac_ips >/dev/null 2>&1 && ipset -X koolclash_black_ac_ips >/dev/null 2>&1
     ipset -F koolclash_black_ac_macs >/dev/null 2>&1 && ipset -X koolclash_black_ac_macs >/dev/null 2>&1
 
+    ipset -F koolclash_white_ports >/dev/null 2>&1 && ipset -X koolclash_white_ports >/dev/null 2>&1
+    ipset -F koolclash_black_ports >/dev/null 2>&1 && ipset -X koolclash_black_ports >/dev/null 2>&1
+
     echo_date "删除 KoolClash 添加的路由表信息"	
     # flush routing table
     ip rule del fwmark 0x162 table 0x162 >/dev/null 2>&1
@@ -253,6 +256,59 @@ add_white_black_ip() {
         rm -rf /tmp/dnsmasq.d/koolclash_white_server.conf >/dev/null 2>&1
     fi
 
+    if [ "$koolclash_firewall_blackip_enable" == "1" ]; then
+        if [ ! -z "$koolclash_firewall_blackip_base64" ]; then
+            ip_black=$(echo $koolclash_firewall_blackip_base64 | base64_decode | sed '/\#/d')
+            dbus set koolclash_firewall_blackip_base64_old=$koolclash_firewall_blackip_base64
+            echo_date '应用外网目标 IP/CIDR 黑名单'
+            for ip in $ip_black; do
+                SRC_IP_CIDR=$(echo $ip | sed 's/\/.*//g' | awk -F "." -v OFS='.' '{print $1,$2,$3,$4"\\/32"}' | sort | uniq)
+                sed -i "s/- \"SRC-IP-CIDR,$SRC_IP_CIDR,\\\U0001F530 节点选择\"//g" $KSROOT/koolclash/config/config.yaml;sed -i '/^$/d' $KSROOT/koolclash/config/config.yaml
+            done
+            yaml_line=$(cat $KSROOT/koolclash/config/config.yaml | grep -n "secret:" | awk -F ":" '{print $1}')
+            for ip in $ip_black; do
+                SRC_IP_CIDR=$(echo $ip | sed 's/\/.*//g' | awk -F "." -v OFS='.' '{print $1,$2,$3,$4"\\/32"}' | sort | uniq)
+                sed -i "$yaml_line i\- \"SRC-IP-CIDR,$SRC_IP_CIDR,\\\U0001F530 节点选择\"" $KSROOT/koolclash/config/config.yaml
+            done
+            dbus set koolclash_firewall_blackip_enable=0
+        else
+            echo_date '删除'
+            ip_black=$(echo $koolclash_firewall_blackip_base64_old | base64_decode | sed '/\#/d')
+            if [ ! -z "$koolclash_firewall_blackip_base64_old" ]; then
+                for ip in $ip_black; do
+                    SRC_IP_CIDR=$(echo $ip | sed 's/\/.*//g' | awk -F "." -v OFS='.' '{print $1,$2,$3,$4"\\/32"}' | sort | uniq)
+                    sed -i "s/- \"SRC-IP-CIDR,$SRC_IP_CIDR,\\\U0001F530 节点选择\"//g" $KSROOT/koolclash/config/config.yaml;sed -i '/^$/d' $KSROOT/koolclash/config/config.yaml
+                done
+                dbus remove koolclash_firewall_blackip_base64_old
+            fi
+        fi
+    fi
+
+    if [ "$koolclash_firewall_blackdomain_enable" == "1" ]; then
+        if [ ! -z "$koolclash_firewall_blackdomain_base64" ]; then
+            ip_black_domain=$(echo $koolclash_firewall_blackdomain_base64 | base64_decode | sed '/\#/d')
+            dbus set koolclash_firewall_blackdomain_base64_old=$koolclash_firewall_blackdomain_base64
+            echo_date '应用外网目标域名黑名单'
+            for domain in $ip_black_domain; do
+                sed -i "s/- \"DOMAIN-SUFFIX,$domain,\\\U0001F530 节点选择\"//g" $KSROOT/koolclash/config/config.yaml;sed -i '/^$/d' $KSROOT/koolclash/config/config.yaml
+            done
+            yaml_line=$(cat $KSROOT/koolclash/config/config.yaml | grep -n "secret:" | awk -F ":" '{print $1}')
+            for domain in $ip_black_domain; do
+                sed -i "$yaml_line i\- \"DOMAIN-SUFFIX,$domain,\\\U0001F530 节点选择\"" $KSROOT/koolclash/config/config.yaml
+            done
+            dbus set koolclash_firewall_blackdomain_enable=0
+        else
+            if [ ! -z "$koolclash_firewall_blackdomain_base64_old" ]; then
+                echo_date '删除'
+                ip_black_domain=$(echo $koolclash_firewall_blackdomain_base64_old | base64_decode | sed '/\#/d')
+                for domain in $ip_black_domain; do
+                    sed -i "s/- \"DOMAIN-SUFFIX,$domain,\\\U0001F530 节点选择\"//g" $KSROOT/koolclash/config/config.yaml;sed -i '/^$/d' $KSROOT/koolclash/config/config.yaml
+                done
+                dbus remove koolclash_firewall_blackdomain_base64_old
+            fi
+        fi
+    fi
+
 	if [ ! -n "$(ipset -L | grep -E "koolclash_white_ac_ips|koolclash_white_ac_macs")" ]; then
         ipset create koolclash_white_ac_ips hash:net >/dev/null 2>&1
         ipset create koolclash_white_ac_macs hash:mac >/dev/null 2>&1
@@ -260,6 +316,13 @@ add_white_black_ip() {
 	if [ ! -n "$(ipset -L | grep -E "koolclash_black_ac_ips|koolclash_black_ac_macs")" ]; then
         ipset create koolclash_black_ac_ips hash:net >/dev/null 2>&1
         ipset create koolclash_black_ac_macs hash:mac >/dev/null 2>&1
+    fi
+
+	if [ ! -n "$(ipset -L | grep "koolclash_white_ports")" ]; then
+        ipset create koolclash_white_ports bitmap:port range 0-65535 >/dev/null 2>&1
+    fi
+	if [ ! -n "$(ipset -L | grep "koolclash_black_ports")" ]; then
+        ipset create koolclash_black_ports bitmap:port range 0-65535 >/dev/null 2>&1
     fi
 }
 
@@ -292,79 +355,57 @@ add_white_black_ip() {
 #    esac
 #}
 
-#lan_access_control() {
-#    common_http_port="21 22 80 8080 8880 2052 2082 2086 2095 443 2053 2083 2087 2096 8443"
-#
-#    if [ "$koolclash_firewall_default_mode" == "1" ]; then
-#        case $koolclash_firewall_default_port_mode in
-#        80443)
-#            echo_date "【全部主机】仅转发【80,443】端口的流量到 Clash，剩余端口直连"
-#            iptables -t nat -A koolclash -p tcp --dport 80 -j REDIRECT --to-ports 23456
-#            iptables -t nat -A koolclash -p tcp --dport 443 -j REDIRECT --to-ports 23456
-#            ;;
-#        1)
-#            echo_date "【全部主机】仅转发【常用 HTTP 端口】端口的流量到 Clash，剩余端口直连"
-#            for i in $common_http_port; do
-#                iptables -t nat -A koolclash -p tcp --dport $i -j REDIRECT --to-ports 23456
-#            done
-#            ;;
-#        all)
-#            echo_date "【全部主机】转发【所有端口】端口的流量到 Clash"
-#            iptables -t nat -A koolclash -p tcp -j REDIRECT --to-ports 23456
-#            ;;
-#        0)
-#            echo_date "【全部主机】转发【以下端口】端口的流量到 Clash，剩余端口直连"
-#            echo_date $(echo $koolclash_firewall_default_port_user | base64 -d)
-#
-#            custom_port=$(echo $koolclash_firewall_default_port_user | base64 -d)
-#            for i in $custom_port; do
-#                iptables -t nat -A koolclash -p tcp --dport $i -j REDIRECT --to-ports 23456
-#            done
-#            ;;
-#        *)
-#            echo_date "【全部主机】转发【所有端口】端口的流量到 Clash"
-#            iptables -t nat -A koolclash -p tcp -j REDIRECT --to-ports 23456
-#            ;;
-#        esac
-#    elif [ "$koolclash_firewall_default_mode" == "0" ]; then
-#        case $koolclash_firewall_default_port_mode in
-#        80443)
-#            echo_date "【全部主机】仅【80,443】端口直连，剩余端口的流量转发到 Clash"
-#            iptables -t nat -A koolclash -p tcp --dport 80 -j RETURN
-#            iptables -t nat -A koolclash -p tcp --dport 443 -j RETURN
-#            iptables -t nat -A koolclash -p tcp -j REDIRECT --to-ports 23456
-#            ;;
-#        1)
-#            echo_date "【全部主机】仅【常用 HTTP 端口】端口直连，剩余端口的流量转发到 Clash"
-#            for i in $common_http_port; do
-#                iptables -t nat -A koolclash -p tcp --dport $i -j RETURN
-#            done
-#            iptables -t nat -A koolclash -p tcp -j REDIRECT --to-ports 23456
-#            ;;
-#        all)
-#            echo_date "【全部主机】【所有端口】端口均直连"
-#            iptables -t nat -A koolclash -p tcp -j RETURN
-#            ;;
-#        0)
-#            echo_date "【全部主机】【以下端口】端口全部直连，剩余端口的流量转发到 Clash"
-#            echo_date $(echo $koolclash_firewall_default_port_user | base64 -d)
-#
-#            custom_port=$(echo $koolclash_firewall_default_port_user | base64 -d)
-#            for i in $custom_port; do
-#                iptables -t nat -A koolclash -p tcp --dport $i -j RETURN
-#            done
-#            iptables -t nat -A koolclash -p tcp -j REDIRECT --to-ports 23456
-#            ;;
-#        *)
-#            echo_date "【全部主机】【所有端口】端口均直连"
-#            iptables -t nat -A koolclash -p tcp -j RETURN
-#            ;;
-#        esac
-#    else
-#        echo_date "【全部主机】转发【所有端口】端口的流量到 Clash"
-#        iptables -t nat -A koolclash -p tcp -j REDIRECT --to-ports 23456
-#    fi
-#}
+port_access_control() {
+    common_http_port="21 22 80 8080 8880 2052 2082 2086 2095 443 2053 2083 2087 2096 8443"
+
+    if [ "$koolclash_firewall_default_mode" == "1" ]; then
+        if [ "$koolclash_firewall_default_port_mode" == "80443" -o "$koolclash_firewall_default_port_mode" == "1" -o "$koolclash_firewall_default_port_mode" == "all" ]; then
+            case $koolclash_firewall_default_port_mode in
+            80443)
+                echo_date "仅转发【80,443】端口的流量到 Clash，剩余端口直连"
+                ipset add koolclash_black_ports 80
+                ipset add koolclash_black_ports 443
+                ;;
+            1)
+                echo_date "仅转发【常用 HTTP 端口】端口的流量到 Clash，剩余端口直连"
+                for i in $common_http_port; do
+                    ipset add koolclash_black_ports $i
+                done
+                ;;
+            all)
+                echo_date "转发【所有端口】端口的流量到 Clash"
+                ;;
+            esac
+        fi
+    fi
+
+    if [ "$koolclash_firewall_default_mode" == "0" ]; then
+        if [ "$koolclash_firewall_base_port_mode" == "80443" -o "$koolclash_firewall_base_port_mode" == "1" -o "$koolclash_firewall_base_port_mode" == "0" ]; then
+            case $koolclash_firewall_base_port_mode in
+            80443)
+                echo_date "仅【80,443】端口直连，剩余端口的流量转发到 Clash"
+                ipset add koolclash_white_ports 80
+                ipset add koolclash_white_ports 443
+                ;;
+            1)
+                echo_date "仅【常用 HTTP 端口】端口直连，剩余端口的流量转发到 Clash"
+                for i in $common_http_port; do
+                    ipset add koolclash_white_ports $i
+                done
+                ;;
+            0)
+                echo_date "仅【以下端口】端口全部直连，剩余端口的流量转发到 Clash"
+                echo_date $(echo $koolclash_firewall_default_port_user | base64 -d)
+
+                custom_port=$(echo $koolclash_firewall_default_port_user | base64 -d)
+                for i in $custom_port; do
+                    ipset add koolclash_white_ports $i
+                done
+                ;;
+            esac     
+        fi
+    fi
+}
 
 #--------------------------------------------------------------------------
 apply_nat_rules() {
@@ -420,10 +461,25 @@ apply_nat_rules() {
     iptables -t nat -A koolclash -m set --match-set koolclash_white_ac_ips src -j RETURN
     [ "$(iptables -t nat -C koolclash -m set --match-set koolclash_white_ac_macs src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
     iptables -t nat -A koolclash -m set --match-set koolclash_white_ac_macs src -j RETURN
+    if [ "$koolclash_firewall_default_port_mode" == "all" ]; then
+        if [ "$koolclash_firewall_base_port_mode" == "80443" -o "$koolclash_firewall_base_port_mode" == "1" -o "$koolclash_firewall_base_port_mode" == "0" ]; then
+            [ "$(iptables -t nat -C koolclash -m set --match-set koolclash_white_ports src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+            iptables -t nat -A koolclash -m set --match-set koolclash_white_ports src -j RETURN
+        fi
+	else
+        [ "$(iptables -t nat -C koolclash -m set --match-set koolclash_white_ports src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+        iptables -t nat -A koolclash -m set --match-set koolclash_white_ports src -j RETURN
+    fi
     [ "$(iptables -t nat -C koolclash -m set ! --match-set koolclash_black_ac_ips src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
     iptables -t nat -A koolclash -m set ! --match-set koolclash_black_ac_ips src -j RETURN
     [ "$(iptables -t nat -C koolclash -m set ! --match-set koolclash_black_ac_macs src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
     iptables -t nat -A koolclash -m set ! --match-set koolclash_black_ac_macs src -j RETURN
+    if [ "$koolclash_firewall_default_port_mode" == "all" ]; then
+        continue
+    else
+        [ "$(iptables -t nat -C koolclash -m set ! --match-set koolclash_black_ports src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+        iptables -t nat -A koolclash -m set ! --match-set koolclash_black_ports src -j RETURN
+    fi
     # Redirect all tcp traffic to 23456
     [ "$(iptables -t nat -C koolclash -p tcp -j REDIRECT --to-ports 23456 >/dev/null 2>&1;echo $?)" == "1" ] && \
     iptables -t nat -A koolclash -p tcp -j REDIRECT --to-ports 23456
@@ -457,14 +513,29 @@ apply_nat_rules() {
         [ "$(iptables -t nat -C koolclash_output -m set --match-set koolclash_chn_white dst -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
         iptables -t nat -A koolclash_output -m set --match-set koolclash_chn_white dst -j RETURN
     fi
-    [ "$(iptables -t nat -C koolclash_output -m set --match-set koolclash_white_ac_ips dst -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
-    iptables -t nat -A koolclash_output -m set --match-set koolclash_white_ac_ips dst -j RETURN
-    [ "$(iptables -t nat -C koolclash_output -m set --match-set koolclash_white_ac_macs dst -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
-    iptables -t nat -A koolclash_output -m set --match-set koolclash_white_ac_macs dst -j RETURN
-    [ "$(iptables -t nat -C koolclash_output -m set ! --match-set koolclash_black_ac_ips dst -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
-    iptables -t nat -A koolclash_output -m set ! --match-set koolclash_black_ac_ips dst -j RETURN
-    [ "$(iptables -t nat -C koolclash_output -m set ! --match-set koolclash_black_ac_macs dst -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
-    iptables -t nat -A koolclash_output -m set ! --match-set koolclash_black_ac_macs dst -j RETURN
+    [ "$(iptables -t nat -C koolclash_output -m set --match-set koolclash_white_ac_ips src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+    iptables -t nat -A koolclash_output -m set --match-set koolclash_white_ac_ips src -j RETURN
+    [ "$(iptables -t nat -C koolclash_output -m set --match-set koolclash_white_ac_macs src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+    iptables -t nat -A koolclash_output -m set --match-set koolclash_white_ac_macs src -j RETURN
+    if [ "$koolclash_firewall_default_port_mode" == "all" ]; then
+        if [ "$koolclash_firewall_base_port_mode" == "80443" -o "$koolclash_firewall_base_port_mode" == "1" -o "$koolclash_firewall_base_port_mode" == "0" ]; then
+            [ "$(iptables -t nat -C koolclash_output -m set --match-set koolclash_white_ports src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+            iptables -t nat -A koolclash_output -m set --match-set koolclash_white_ports src -j RETURN
+        fi
+	else
+        [ "$(iptables -t nat -C koolclash_output -m set --match-set koolclash_white_ports src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+        iptables -t nat -A koolclash_output -m set --match-set koolclash_white_ports src -j RETURN
+    fi
+    [ "$(iptables -t nat -C koolclash_output -m set ! --match-set koolclash_black_ac_ips src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+    iptables -t nat -A koolclash_output -m set ! --match-set koolclash_black_ac_ips src -j RETURN
+    [ "$(iptables -t nat -C koolclash_output -m set ! --match-set koolclash_black_ac_macs src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+    iptables -t nat -A koolclash_output -m set ! --match-set koolclash_black_ac_macs src -j RETURN
+    if [ "$koolclash_firewall_default_port_mode" == "all" ]; then
+        continue
+    else
+        [ "$(iptables -t nat -C koolclash_output -m set ! --match-set koolclash_black_ports src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+        iptables -t nat -A koolclash_output -m set ! --match-set koolclash_black_ports src -j RETURN
+    fi
     # Redirect all tcp traffic to 23456
     [ "$(iptables -t nat -C koolclash_output -d 198.18.0.0/16 -p tcp -j REDIRECT --to-ports 23456 >/dev/null 2>&1;echo $?)" == "1" ] && \
     iptables -t nat -A koolclash_output -d 198.18.0.0/16 -p tcp -j REDIRECT --to-ports 23456
@@ -479,10 +550,25 @@ apply_nat_rules() {
     iptables -t mangle -A koolclash -m set --match-set koolclash_white_ac_ips src -j RETURN
     [ "$(iptables -t mangle -C koolclash -m set --match-set koolclash_white_ac_macs src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
     iptables -t mangle -A koolclash -m set --match-set koolclash_white_ac_macs src -j RETURN
+    if [ "$koolclash_firewall_default_port_mode" == "all" ]; then
+        if [ "$koolclash_firewall_base_port_mode" == "80443" -o "$koolclash_firewall_base_port_mode" == "1" -o "$koolclash_firewall_base_port_mode" == "0" ]; then
+            [ "$(iptables -t mangle -C koolclash -m set --match-set koolclash_white_ports src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+            iptables -t mangle -A koolclash -m set --match-set koolclash_white_ports src -j RETURN
+        fi
+	else
+        [ "$(iptables -t mangle -C koolclash -m set --match-set koolclash_white_ports src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+        iptables -t mangle -A koolclash -m set --match-set koolclash_white_ports src -j RETURN
+    fi
     [ "$(iptables -t mangle -C koolclash -m set ! --match-set koolclash_black_ac_ips src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
     iptables -t mangle -A koolclash -m set ! --match-set koolclash_black_ac_ips src -j RETURN
     [ "$(iptables -t mangle -C koolclash -m set ! --match-set koolclash_black_ac_macs src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
     iptables -t mangle -A koolclash -m set ! --match-set koolclash_black_ac_macs src -j RETURN
+    if [ "$koolclash_firewall_default_port_mode" == "all" ]; then
+        continue
+    else
+        [ "$(iptables -t mangle -C koolclash -m set ! --match-set koolclash_black_ports src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+        iptables -t mangle -A koolclash -m set ! --match-set koolclash_black_ports src -j RETURN
+    fi
     # Exclude port traffic
     [ "$(iptables -t mangle -C koolclash -p udp -m udp --dport 53 -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
     iptables -t mangle -A koolclash -p udp -m udp --dport 53 -j RETURN
@@ -496,6 +582,7 @@ load_nat() {
     #flush_nat
     #creat_ipset
     add_white_black_ip
+    port_access_control
     apply_nat_rules
 }
 
@@ -567,6 +654,7 @@ start_koolclash() {
     creat_update_sub_cron
     load_rule_mode
     $KSROOT/scripts/koolclash_config.sh acl
+    echo_date "请在【设备控制】页面添加需要代理的设备，默认所有设备不走代理！"
     echo_date ------------------------------- KoolClash 启动完毕 -------------------------------
     echo_date KoolClash 启动后可能无法立即上网，请先等待 1-2 分钟！
 }
