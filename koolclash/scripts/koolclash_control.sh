@@ -259,8 +259,15 @@ add_white_black_ip() {
     if [ "$koolclash_firewall_blackip_enable" == "1" ]; then
         if [ ! -z "$koolclash_firewall_blackip_base64" ]; then
             ip_black=$(echo $koolclash_firewall_blackip_base64 | base64_decode | sed '/\#/d')
-            dbus set koolclash_firewall_blackip_base64_old=$koolclash_firewall_blackip_base64
             echo_date '应用外网目标 IP/CIDR 黑名单'
+            if [ ! -z "$koolclash_firewall_blackip_base64_old" ]; then
+                ip_black_old=$(echo $koolclash_firewall_blackip_base64_old | base64_decode | sed '/\#/d')
+                for ip in $ip_black_old; do
+                    SRC_IP_CIDR=$(echo $ip | sed 's/\/.*//g' | awk -F "." -v OFS='.' '{print $1,$2,$3,$4"\\/32"}' | sort | uniq)
+                    sed -i "s/- \"SRC-IP-CIDR,$SRC_IP_CIDR,\\\U0001F530 节点选择\"//g" /tmp/config.yaml;sed -i '/^$/d' /tmp/config.yaml
+                done
+                dbus remove koolclash_firewall_blackip_base64_old
+            fi
             for ip in $ip_black; do
                 SRC_IP_CIDR=$(echo $ip | sed 's/\/.*//g' | awk -F "." -v OFS='.' '{print $1,$2,$3,$4"\\/32"}' | sort | uniq)
                 sed -i "s/- \"SRC-IP-CIDR,$SRC_IP_CIDR,\\\U0001F530 节点选择\"//g" $KSROOT/koolclash/config/config.yaml;sed -i '/^$/d' $KSROOT/koolclash/config/config.yaml
@@ -271,6 +278,7 @@ add_white_black_ip() {
                 sed -i "$yaml_line i\- \"SRC-IP-CIDR,$SRC_IP_CIDR,\\\U0001F530 节点选择\"" $KSROOT/koolclash/config/config.yaml
             done
             dbus set koolclash_firewall_blackip_enable=0
+            dbus set koolclash_firewall_blackip_base64_old=$koolclash_firewall_blackip_base64
         else
             ip_black=$(echo $koolclash_firewall_blackip_base64_old | base64_decode | sed '/\#/d')
             if [ ! -z "$koolclash_firewall_blackip_base64_old" ]; then
@@ -286,8 +294,14 @@ add_white_black_ip() {
     if [ "$koolclash_firewall_blackdomain_enable" == "1" ]; then
         if [ ! -z "$koolclash_firewall_blackdomain_base64" ]; then
             ip_black_domain=$(echo $koolclash_firewall_blackdomain_base64 | base64_decode | sed '/\#/d')
-            dbus set koolclash_firewall_blackdomain_base64_old=$koolclash_firewall_blackdomain_base64
             echo_date '应用外网目标域名黑名单'
+            if [ ! -z "$koolclash_firewall_blackdomain_base64_old" ]; then
+                ip_black_domain_old=$(echo $koolclash_firewall_blackdomain_base64_old | base64_decode | sed '/\#/d')
+                for domain in $ip_black_domain_old; do
+                    sed -i "s/- \"DOMAIN-SUFFIX,$domain,\\\U0001F530 节点选择\"//g" /tmp/config.yaml;sed -i '/^$/d' /tmp/config.yaml
+                done
+                dbus remove koolclash_firewall_blackdomain_base64_old
+            fi
             for domain in $ip_black_domain; do
                 sed -i "s/- \"DOMAIN-SUFFIX,$domain,\\\U0001F530 节点选择\"//g" $KSROOT/koolclash/config/config.yaml;sed -i '/^$/d' $KSROOT/koolclash/config/config.yaml
             done
@@ -296,6 +310,7 @@ add_white_black_ip() {
                 sed -i "$yaml_line i\- \"DOMAIN-SUFFIX,$domain,\\\U0001F530 节点选择\"" $KSROOT/koolclash/config/config.yaml
             done
             dbus set koolclash_firewall_blackdomain_enable=0
+            dbus set koolclash_firewall_blackdomain_base64_old=$koolclash_firewall_blackdomain_base64
         else
             if [ ! -z "$koolclash_firewall_blackdomain_base64_old" ]; then
                 ip_black_domain=$(echo $koolclash_firewall_blackdomain_base64_old | base64_decode | sed '/\#/d')
