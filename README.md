@@ -30,7 +30,7 @@ A rule based custom proxy for <strong>Koolshare OpenWrt/LEDE x64</strong> based 
 </p>
 
 <p align="center">
-    <img src="http://router.houzi-blog.top:3090/images/2022-07-12.png">
+    <img src="http://router.houzi-blog.top:3090/images/2022-08-27.png">
 </p>
 
 > KoolClash is for [Koolshare OpenWrt/LEDE x86_64](http://fw.koolcenter.com/LEDE_X64_fw867) ONLY. Use [OpenClash](https://github.com/vernesong/OpenClash/) if you are running original OpenWrt.
