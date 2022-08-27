@@ -120,3 +120,6 @@ else
         http_response 'success'
     fi
 fi
+
+[ ! -z "$koolclash_firewall_blackip_base64" ] && dbus set koolclash_firewall_blackip_enable=1
+[ ! -z "$koolclash_firewall_blackdomain_base64" ] && dbus set koolclash_firewall_blackdomain_enable=1
