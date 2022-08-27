@@ -3,8 +3,8 @@ export KSROOT=/koolshare
 source $KSROOT/scripts/base.sh
 eval $(dbus export koolclash)
 alias echo_date='echo 【$(date +%Y年%m月%d日\ %X)】:'
-IPDB_VERSION="2022-06-12"
-CHN_VERSION="2022-06-12"
+IPDB_VERSION="2022-08-26"
+CHN_VERSION="2022-08-26"
 
 # 判断路由架构和平台
 # Modified from koolss plugin (https://github.com/koolshare/ledesoft/blob/master/koolclash/koolss/install.sh)
