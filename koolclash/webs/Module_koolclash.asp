@@ -1090,7 +1090,7 @@
                         value: window.dbus.koolclash_firewall_default_mode || '1'
                     },
                     {
-                        title: '目标端口',
+                        title: '<b style="cursor: pointer;" href="javascript:void(0);" onclick="koolclash_portControl_pass();">目标端口</b>',
                         name: 'koolclash-acl-default-port',
                         type: 'select',
                         //style: select_style,
@@ -1103,7 +1103,7 @@
                         help: '请点击【目标端口】查看帮助信息'
                     },
                     {
-                        title: '目标端口',
+                        title: '<b style="cursor: pointer;" href="javascript:void(0);" onclick="koolclash_portControl_return();">目标端口</b>',
                         name: 'koolclash-acl-base-port',
                         type: 'select',
                         //style: select_style,
