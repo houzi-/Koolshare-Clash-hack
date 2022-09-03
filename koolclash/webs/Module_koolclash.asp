@@ -60,6 +60,11 @@
             margin-left: 8px;
         }
 
+        #koolclash-btn-submit-node-memory {
+            margin-bottom: 5px;
+            margin-left: 8px;
+        }
+
         #koolclash-btn-submit-update-sub {
             margin-bottom: 5px;
             margin-left: 8px;
@@ -620,6 +625,14 @@
                 </div>
             </div>
             <div class="box">
+                <div class="heading">Clash 节点记忆</div>
+                <div class="content">
+                    <p>Clash 自带的节点记忆功能，每 1 分钟保存一次节点配置信息，下次 Clash 启动将会沿用上次启动时的配置。</p>
+                    <p style="color:red; margin-top: 8px">注意！Clash 节点记忆只针对 proxy group name！Clash 其它配置信息将不会进行保存！</p>
+                    <div id="koolclash-node-memory-panel" style="margin-top: 16px"></div>
+                </div>
+            </div>
+            <div class="box">
                 <div class="heading">Clash 配置定时更新</div>
                 <div class="content">
                     <p>KoolClash 通过OpenWrt自带的crontab实现每天定时定点更新 Clash 订阅配置文件。</p>
@@ -1108,7 +1121,7 @@
                         type: 'select',
                         //style: select_style,
                         options: [
-                            ['off', '关闭'],
+                            ['off', '禁用'],
                             ['80443', '80,443'],
                             ['1', '常用端口'],
                             ['0', '自定义端口']
@@ -1173,6 +1186,19 @@
                         value: window.dbus.koolclash_watchdog_enable || '0',
                     },
                 ]);
+                $('#koolclash-node-memory-panel').forms([
+                    {
+                        title: 'Clash 节点记忆开关',
+                        name: 'koolclash-select-node-memory',
+                        type: 'select',
+                        options: [
+                            ['0', '禁用'],
+                            ['1', '开启']
+                        ],
+                        suffix: '<span> &nbsp;&nbsp;</span><button type="button" id="koolclash-btn-submit-node-memory" onclick="KoolClash.submitNodeMemory();" class="btn btn-primary">提交</button>',
+                        value: window.dbus.koolclash_node_memory_enable || '0',
+                    },
+                ]);
                 $('#koolclash-update-sub-panel').forms([
                     { title: 'Clash 更新开关', multi: [
 						{ name: 'koolclash-select-update-sub', type: 'select', options:[['0', '禁用'],['1', '开启']], value: window.dbus.koolclash_update_sub_enable || '0', suffix: ' &nbsp;&nbsp;', },
@@ -1204,7 +1230,9 @@
                 if (E('_koolclash-acl-default-mode').value === '0') {
                     $('#koolclash-acl-port-panel > fieldset:nth-child(3)').show();
                     $('#koolclash-acl-port-panel > fieldset:nth-child(2)').hide();
-                    $('#_koolclash-acl-default-port-user').show();
+                    if (E('_koolclash-acl-base-port').value === '0') {
+                        $('#_koolclash-acl-default-port-user').show();
+                    }
                 } else if (E('_koolclash-acl-default-mode').value === '1') {
                     $('#koolclash-acl-port-panel > fieldset:nth-child(2)').show();
                     $('#koolclash-acl-port-panel > fieldset:nth-child(3)').hide();
@@ -2435,6 +2463,40 @@ ${Base64.decode(data.firewall_ipset_list)}
                     }
                 });
             },
+            submitNodeMemory: () => {
+                KoolClash.disableAllButton();
+                E('koolclash-btn-submit-node-memory').innerHTML = `正在提交`;
+
+                let id = parseInt(Math.random() * 100000000),
+                    postData = JSON.stringify({
+                        id,
+                        "method": "koolclash_node_memory.sh",
+                        "params": [`${E('_koolclash-select-node-memory').value}`],
+                        "fields": ""
+                    });
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/_api/",
+                    data: postData,
+                    dataType: "json",
+                    success: (resp) => {
+                        E('koolclash-btn-submit-node-memory').innerHTML = `提交成功，下次启动 Clash 时生效！`;
+                        setTimeout(() => {
+                            KoolClash.enableAllButton();
+                            E('koolclash-btn-submit-node-memory').innerHTML = '提交';
+                        }, 2500)
+                    },
+                    error: () => {
+                        E('koolclash-btn-submit-node-memory').innerHTML = `提交失败，请重试！`;
+                        setTimeout(() => {
+                            KoolClash.enableAllButton();
+                            E('koolclash-btn-submit-node-memory').innerHTML = '提交';
+                        }, 2500)
+                    }
+                });
+            },	
             submitUpdateSub: () => {
                 KoolClash.disableAllButton();
                 E('koolclash-btn-submit-update-sub').innerHTML = `正在提交`;
@@ -2536,7 +2598,11 @@ ${Base64.decode(data.firewall_ipset_list)}
                 if (E('_koolclash-acl-default-mode').value === '0') {
                     $('#koolclash-acl-port-panel > fieldset:nth-child(3)').show();
                     $('#koolclash-acl-port-panel > fieldset:nth-child(2)').hide();
-                    $('#_koolclash-acl-default-port-user').show();
+					if (r.getAttribute('id') === '_koolclash-acl-base-port') {
+                        if (E('_koolclash-acl-base-port').value === '0') {
+                            $('#_koolclash-acl-default-port-user').show();
+                        }
+					}
                 } else if (E('_koolclash-acl-default-mode').value === '1') {
                     $('#koolclash-acl-port-panel > fieldset:nth-child(2)').show();
                     $('#koolclash-acl-port-panel > fieldset:nth-child(3)').hide();

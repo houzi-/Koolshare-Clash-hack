@@ -73,7 +73,7 @@ kill_process() {
 #    echo "cache-size=0" >>/tmp/dnsmasq.d/koolclash.conf
 #}
 
-load_rule_mode () {
+load_rule_mode() {
     if [ "$(cat /koolshare/koolclash/config/config.yaml | grep "mode: Rule")" == "mode: Rule" ]; then
         echo_date "代理模式为 Rule"
         dbus set koolclash_switch_config_mode=1
@@ -86,6 +86,14 @@ load_rule_mode () {
         echo_date "代理模式为 Direct"
         dbus set koolclash_switch_config_mode=3
     fi
+}
+
+node_memory() {
+    if [ "$koolclash_node_memory_enable" == "1" ]; then
+        yq w -i $KSROOT/koolclash/config/config.yaml profile.store-selected "true"
+	else
+        yq w -i $KSROOT/koolclash/config/config.yaml profile.store-selected "false"        
+	fi
 }
 
 restart_dnsmasq() {
@@ -244,16 +252,16 @@ add_white_black_ip() {
         echo_date '应用外网目标域名白名单'
         ISP_DNS=$(ubus call network.interface.wan status | jsonfilter -e '@["dns-server"][0]')
         rm -rf /tmp/dnsmasq.d/koolclash_ipset.conf >/dev/null 2>&1
-        rm -rf /tmp/dnsmasq.d/koolclash_white_server.conf >/dev/null 2>&1
+        #rm -rf /tmp/dnsmasq.d/koolclash_white_server.conf >/dev/null 2>&1
         echo "#for koolclash white_domain" >> /tmp/dnsmasq.d/koolclash_ipset.conf
-        echo "#for koolclash white_domain_server" >> /tmp/dnsmasq.d/koolclash_white_server.conf
+        #echo "#for koolclash white_domain_server" >> /tmp/dnsmasq.d/koolclash_white_server.conf
         for domain in $ip_white_domain; do
             echo "$domain" | sed "s/^/ipset=&\/./g" | sed "s/$/\/koolclash_white/g" >> /tmp/dnsmasq.d/koolclash_ipset.conf
-            echo "$domain" | sed "s/^/server=&\//g" | sed "s/$/\/$ISP_DNS/g" >> /tmp/dnsmasq.d/koolclash_white_server.conf
+            #echo "$domain" | sed "s/^/server=&\//g" | sed "s/$/\/$ISP_DNS/g" >> /tmp/dnsmasq.d/koolclash_white_server.conf
         done
     else
         rm -rf /tmp/dnsmasq.d/koolclash_ipset.conf >/dev/null 2>&1
-        rm -rf /tmp/dnsmasq.d/koolclash_white_server.conf >/dev/null 2>&1
+        #rm -rf /tmp/dnsmasq.d/koolclash_white_server.conf >/dev/null 2>&1
     fi
 
 	if [ ! -n "$(ipset -L | grep -E "koolclash_white_ac_ips|koolclash_white_ac_macs")" ]; then
@@ -636,6 +644,8 @@ start_koolclash() {
     flush_nat
     restore_start_file
     kill_process
+    # node_memory
+    node_memory
     echo_date ---------------------------------------------------------------------------------
     # create_dnsmasq_conf
     auto_start
