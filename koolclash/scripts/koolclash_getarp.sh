@@ -9,8 +9,10 @@ $arp_scan --interface=br-lan -l | grep "(Unknown" > /tmp/list.txt
 
 arp=$(cat /tmp/list.txt | awk '{$3 = $2; print $0}' | awk '{$2 = $1; print $0}' | sed 's/ /</g' | sed ':a;N;$!ba;s#\n#>#g')
 
-if [ -n "$arp" ];then
+if [ -n "$arp" ]; then
     dbus set koolclash_arp="$arp"
+else
+    dbus set koolclash_arp="undefined"
 fi
 
 http_response "$arp"
