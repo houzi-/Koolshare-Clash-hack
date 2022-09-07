@@ -533,10 +533,10 @@
                 <div class="heading">端口控制</div>
                 <div class="content">
                     <!--<p style="color: red; font-weight: 600">功能开发中，尚不可用！</p>-->
-                    <p>
-                        除了设置的端口控制外，其它端口都将走默认的模式。
+                    <p style="color: #999">
+                        &nbsp;&nbsp;除了设置的端口控制外，其它端口都将走默认的模式。
                         <br>
-                        常用端口包括 21 22 80 8080 8880 2052 2082 2086 2095 443 2053 2083 2087 2096 8443
+                        &nbsp;&nbsp;常用端口包括 21 22 80 8080 8880 2052 2082 2086 2095 443 2053 2083 2087 2096 8443
                     </p>
                     <div id="koolclash-acl-port-panel" class="section"></div>
                     <br>
@@ -546,7 +546,7 @@
                 </div>
             </div>
             <div class="box">
-                <div class="heading" style="margin-top: -15px;"></div>
+                <div class="heading">IP/CIDR 白名单</div>
                 <div class="content">
                     <div id="koolclash-firewall-ipset"></div>
                     <div class="koolclash-btn-container">
@@ -555,7 +555,7 @@
                 </div>
             </div>
             <div class="box">
-                <div class="heading" style="margin-top: -15px;"></div>
+                <div class="heading">域名白名单</div>
                 <div class="content">
                     <div id="koolclash-firewall-ipset-domain"></div>
                     <div class="koolclash-btn-container">
@@ -564,7 +564,7 @@
                 </div>
             </div>
             <div class="box">
-                <div class="heading" style="margin-top: -15px;"></div>
+                <div class="heading">IP/CIDR 黑名单</div>
                 <div class="content">
                     <div id="koolclash-firewall-black-ipset"></div>
                     <div class="koolclash-btn-container">
@@ -573,7 +573,7 @@
                 </div>
             </div>
             <div class="box">
-                <div class="heading" style="margin-top: -15px;"></div>
+                <div class="heading">域名黑名单</div>
                 <div class="content">
                     <div id="koolclash-firewall-black-ipset-domain"></div>
                     <div class="koolclash-btn-container">
@@ -628,7 +628,7 @@
                 <div class="heading">Clash 节点记忆</div>
                 <div class="content">
                     <p>Clash 自带的节点记忆功能，每 1 分钟保存一次节点配置信息，下次 Clash 启动将会沿用上次启动时的配置。</p>
-                    <p style="color:red; margin-top: 8px">注意！Clash 节点记忆只针对 proxy group name！Clash 其它配置信息将不会进行保存！</p>
+                    <p style="color:red; margin-top: 8px">注意！Clash 节点记忆只针对 proxy group name！Clash 其它配置信息将不会进行保存！机场节点不稳定请谨慎使用该功能！</p>
                     <div id="koolclash-node-memory-panel" style="margin-top: 16px"></div>
                 </div>
             </div>
@@ -905,8 +905,8 @@
                         for ( var i = 0; i < s3.length -1; ++i ) {
                             option_arp_web[i] = [s2[ i ].split( '<' )[0],"【" + s2[ i ].split( '<' )[0] + "】",s2[ i ].split( '<' )[1],s2[ i ].split( '<' )[2]];
                         }
-                        //option_arp_web[s2.length -1] = ["自定义", "【自定义设备】","",""];
-                        option_arp_web[s3.length -1] = ["自定义", "【自定义设备】","",""];
+                        option_arp_web[s2.length -1] = ["自定义", "【自定义设备】","",""];
+                        //option_arp_web[s3.length -1] = ["自定义", "【自定义设备】","",""];
                         option_arp_list = unique_array(option_arp_local.concat( option_arp_web ));
                         kcacl.setup();
                     }
@@ -921,8 +921,8 @@
                     for ( var i = 0; i < s3.length -1; ++i ) {
                         option_arp_web[i] = [s2[ i ].split( '<' )[0],"【" + s2[ i ].split( '<' )[0] + "】",s2[ i ].split( '<' )[1],s2[ i ].split( '<' )[2]];
                     }
-                    //option_arp_web[s2.length -1] = ["自定义", "【自定义设备】","",""];
-                    option_arp_web[s3.length -1] = ["自定义", "【自定义设备】","",""];
+                    option_arp_web[s2.length -1] = ["自定义", "【自定义设备】","",""];
+                    //option_arp_web[s3.length -1] = ["自定义", "【自定义设备】","",""];
                     option_arp_list = unique_array(option_arp_local.concat( option_arp_web ));
                     kcacl.setup();
                 },
@@ -1139,7 +1139,7 @@
                 ]);
                 $('#koolclash-firewall-ipset').forms([
                     {
-                        title: '<b>IP/CIDR 白名单</b><br><br><p style="color: #999">不通过 Clash 的 IP/CIDR 外网地址，一行一个，例如：<br>119.29.29.29<br>210.2.4.0/24</p>',
+                        title: '<p style="color: #999">不通过 Clash 的 IP/CIDR 外网地址，一行一个，例如：<br>119.29.29.29<br>210.2.4.0/24</p>',
                         name: 'koolclash_firewall_white_ipset',
                         type: 'textarea',
                         value: Base64.decode(window.dbus.koolclash_firewall_whiteip_base64 || '') || '',
@@ -1148,7 +1148,7 @@
                 ]);
                 $('#koolclash-firewall-ipset-domain').forms([
                     {
-                        title: '<b>域名白名单</b><br><br><p style="color: #999">不通过 Clash 的域名外网地址，一行一个，例如：<br>google.com<br>facebook.com</p>',
+                        title: '<p style="color: #999">不通过 Clash 的域名外网地址，一行一个，例如：<br>google.com<br>facebook.com</p>',
                         name: 'koolclash_firewall_white_ipset_domain',
                         type: 'textarea',
                         value: Base64.decode(window.dbus.koolclash_firewall_whitedomain_base64 || '') || '',
@@ -1157,7 +1157,7 @@
                 ]);
                 $('#koolclash-firewall-black-ipset').forms([
                     {
-                        title: '<b>IP/CIDR 黑名单</b><br><br><p style="color: #999">通过 Clash 的 IP/CIDR 外网地址，一行一个，例如：<br>119.29.29.29<br>210.2.4.0/24</p>',
+                        title: '<p style="color: #999">通过 Clash 的 IP/CIDR 外网地址，一行一个，例如：<br>119.29.29.29<br>210.2.4.0/24</p>',
                         name: 'koolclash_firewall_black_ipset',
                         type: 'textarea',
                         value: Base64.decode(window.dbus.koolclash_firewall_blackip_base64 || '') || '',
@@ -1166,7 +1166,7 @@
                 ]);
                 $('#koolclash-firewall-black-ipset-domain').forms([
                     {
-                        title: '<b>域名黑名单</b><br><br><p style="color: #999">通过 Clash 的域名外网地址，一行一个，例如：<br>google.com<br>facebook.com</p>',
+                        title: '<p style="color: #999">通过 Clash 的域名外网地址，一行一个，例如：<br>google.com<br>facebook.com</p>',
                         name: 'koolclash_firewall_black_ipset_domain',
                         type: 'textarea',
                         value: Base64.decode(window.dbus.koolclash_firewall_blackdomain_base64 || '') || '',
