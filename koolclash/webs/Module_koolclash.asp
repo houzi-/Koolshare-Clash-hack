@@ -1134,7 +1134,7 @@
                         name: 'koolclash-acl-default-port-user',
                         type: 'textarea',
                         value: Base64.decode(window.dbus.koolclash_firewall_default_port_user || '') || '',
-                        style: 'width: 100%; height: 50px;',
+                        style: 'width: 80%; height: 50px;',
                     },
                 ]);
                 $('#koolclash-firewall-ipset').forms([
@@ -1245,10 +1245,12 @@
                 //    $('#_koolclash-acl-default-port-user').hide();
                 //}
 
-                if (E('_koolclash-acl-base-port').value === '0') {			
-                    $('#_koolclash-acl-default-port-user').show();
-                } else {
-                    $('#_koolclash-acl-default-port-user').hide();
+                if (E('_koolclash-acl-default-mode').value === '0') {
+                    if (E('_koolclash-acl-base-port').value === '0') {			
+                        $('#_koolclash-acl-default-port-user').show();
+                    } else {
+                        $('#_koolclash-acl-default-port-user').hide();
+                    }
                 }
 
                 $('.koolclash-nav-log').on('click', KoolClash.getLog);
@@ -2598,11 +2600,9 @@ ${Base64.decode(data.firewall_ipset_list)}
                 if (E('_koolclash-acl-default-mode').value === '0') {
                     $('#koolclash-acl-port-panel > fieldset:nth-child(3)').show();
                     $('#koolclash-acl-port-panel > fieldset:nth-child(2)').hide();
-					if (r.getAttribute('id') === '_koolclash-acl-base-port') {
-                        if (E('_koolclash-acl-base-port').value === '0') {
-                            $('#_koolclash-acl-default-port-user').show();
-                        }
-					}
+                    if (E('_koolclash-acl-base-port').value === '0') {
+                        $('#_koolclash-acl-default-port-user').show();
+                    }
                 } else if (E('_koolclash-acl-default-mode').value === '1') {
                     $('#koolclash-acl-port-panel > fieldset:nth-child(2)').show();
                     $('#koolclash-acl-port-panel > fieldset:nth-child(3)').hide();
