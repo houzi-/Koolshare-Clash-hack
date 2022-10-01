@@ -34,7 +34,7 @@ echo_date "下载完成，开始复制" >>/tmp/upload/koolclash_log.txt
 cp -rf $KSROOT/koolclash/Country.mmdb $KSROOT/koolclash/ipdb
 
 chmod 644 $KSROOT/koolclash/ipdb/*
-version=$(ls --full-time /koolshare/koolclash/Country.mmdb | awk '{print $6}')
+version=$(ls --full-time $KSROOT/koolclash/Country.mmdb | awk '{print $6}')
 
 cp -rf $KSROOT/koolclash/ipdb/Country.mmdb $KSROOT/koolclash/config
 

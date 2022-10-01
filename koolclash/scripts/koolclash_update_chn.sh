@@ -36,7 +36,7 @@ fi
 echo_date "下载完成，开始复制" >>/tmp/upload/koolclash_log.txt
 cp -rf $KSROOT/koolclash/all_cn.txt $KSROOT/koolclash/chn
 
-version=$(ls --full-time /koolshare/koolclash/all_cn.txt | awk '{print $6}')
+version=$(ls --full-time $KSROOT/koolclash/all_cn.txt | awk '{print $6}')
 
 cp -rf $KSROOT/koolclash/chn/all_cn.txt $KSROOT/koolclash/config/china_ip_route.ipset
 
