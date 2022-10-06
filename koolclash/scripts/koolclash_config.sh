@@ -41,28 +41,28 @@ creat_ipset() {
 
 creat_iptables() {
     if [ ! -n "$(iptables -t nat -S koolclash | grep -E "koolclash_white_ac_ips|koolclash_white_ac_macs")" ]; then
-        iptables -t nat -A koolclash -m set --match-set koolclash_white_ac_ips dst -j RETURN >/dev/null 2>&1
-        iptables -t nat -A koolclash -m set --match-set koolclash_white_ac_macs dst -j RETURN >/dev/null 2>&1
+        [ "$koolclash_acl_mode" == 1 ] && iptables -t nat -A koolclash -m set --match-set koolclash_white_ac_ips dst -j RETURN >/dev/null 2>&1
+        [ "$koolclash_acl_mode" == 2 ] && iptables -t nat -A koolclash -m set --match-set koolclash_white_ac_macs dst -j RETURN >/dev/null 2>&1
     fi
     if [ ! -n "$(iptables -t nat -S koolclash | grep -E "koolclash_black_ac_ips|koolclash_black_ac_macs")" ]; then
-        iptables -t nat -A koolclash -m set ! --match-set koolclash_black_ac_ips dst -j RETURN >/dev/null 2>&1
-        iptables -t nat -A koolclash -m set ! --match-set koolclash_black_ac_macs dst -j RETURN >/dev/null 2>&1
+        [ "$koolclash_acl_mode" == 1 ] && iptables -t nat -A koolclash -m set ! --match-set koolclash_black_ac_ips dst -j RETURN >/dev/null 2>&1
+        [ "$koolclash_acl_mode" == 2 ] && iptables -t nat -A koolclash -m set ! --match-set koolclash_black_ac_macs dst -j RETURN >/dev/null 2>&1
     fi
     if [ ! -n "$(iptables -t nat -S koolclash_output | grep -E "koolclash_white_ac_ips|koolclash_white_ac_macs")" ]; then
-        iptables -t nat -A koolclash_output -m set --match-set koolclash_white_ac_ips dst -j RETURN >/dev/null 2>&1
-        iptables -t nat -A koolclash_output -m set --match-set koolclash_white_ac_macs dst -j RETURN >/dev/null 2>&1
+        [ "$koolclash_acl_mode" == 1 ] && iptables -t nat -A koolclash_output -m set --match-set koolclash_white_ac_ips dst -j RETURN >/dev/null 2>&1
+        [ "$koolclash_acl_mode" == 2 ] && iptables -t nat -A koolclash_output -m set --match-set koolclash_white_ac_macs dst -j RETURN >/dev/null 2>&1
 	fi
     if [ ! -n "$(iptables -t nat -S koolclash_output | grep -E "koolclash_black_ac_ips|koolclash_black_ac_macs")" ]; then
-        iptables -t nat -A koolclash_output -m set ! --match-set koolclash_black_ac_ips dst -j RETURN >/dev/null 2>&1
-        iptables -t nat -A koolclash_output -m set ! --match-set koolclash_black_ac_macs dst -j RETURN >/dev/null 2>&1
+        [ "$koolclash_acl_mode" == 1 ] && iptables -t nat -A koolclash_output -m set ! --match-set koolclash_black_ac_ips dst -j RETURN >/dev/null 2>&1
+        [ "$koolclash_acl_mode" == 2 ] && iptables -t nat -A koolclash_output -m set ! --match-set koolclash_black_ac_macs dst -j RETURN >/dev/null 2>&1
 	fi
     if [ ! -n "$(iptables -t mangle -S koolclash | grep -E "koolclash_white_ac_ips|koolclash_white_ac_macs")" ]; then
-        iptables -t mangle -A koolclash -m set --match-set koolclash_white_ac_ips dst -j RETURN >/dev/null 2>&1
-        iptables -t mangle -A koolclash -m set --match-set koolclash_white_ac_macs dst -j RETURN >/dev/null 2>&1
+        [ "$koolclash_acl_mode" == 1 ] && iptables -t mangle -A koolclash -m set --match-set koolclash_white_ac_ips dst -j RETURN >/dev/null 2>&1
+        [ "$koolclash_acl_mode" == 2 ] && iptables -t mangle -A koolclash -m set --match-set koolclash_white_ac_macs dst -j RETURN >/dev/null 2>&1
 	fi
     if [ ! -n "$(iptables -t mangle -S koolclash | grep -E "koolclash_black_ac_ips|koolclash_black_ac_macs")" ]; then
-        iptables -t mangle -A koolclash -m set ! --match-set koolclash_black_ac_ips dst -j RETURN >/dev/null 2>&1
-        iptables -t mangle -A koolclash -m set ! --match-set koolclash_black_ac_macs dst -j RETURN >/dev/null 2>&1
+        [ "$koolclash_acl_mode" == 1 ] && iptables -t mangle -A koolclash -m set ! --match-set koolclash_black_ac_ips dst -j RETURN >/dev/null 2>&1
+        [ "$koolclash_acl_mode" == 2 ] && iptables -t mangle -A koolclash -m set ! --match-set koolclash_black_ac_macs dst -j RETURN >/dev/null 2>&1
 	fi
 }
 
@@ -98,7 +98,7 @@ acl)
         if [ -n "$koolclash_acl_list" ]; then
             clear_ipset
             creat_ipset
-            creat_iptables
+            #creat_iptables
             lan_acess_control
         else
             :
@@ -115,7 +115,7 @@ acl)
         if [ -n "$koolclash_acl_list" ]; then
             clear_ipset
             creat_ipset
-            creat_iptables
+            #creat_iptables
             lan_acess_control
             http_response 'success'
         else

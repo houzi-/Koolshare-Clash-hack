@@ -412,10 +412,14 @@ apply_nat_rules() {
         [ "$(iptables -t nat -C koolclash -m set --match-set koolclash_chn_white dst -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
         iptables -t nat -A koolclash -m set --match-set koolclash_chn_white dst -j RETURN
     fi
-    [ "$(iptables -t nat -C koolclash -m set --match-set koolclash_white_ac_ips src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
-    iptables -t nat -A koolclash -m set --match-set koolclash_white_ac_ips src -j RETURN
-    [ "$(iptables -t nat -C koolclash -m set --match-set koolclash_white_ac_macs src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
-    iptables -t nat -A koolclash -m set --match-set koolclash_white_ac_macs src -j RETURN
+    if [ "$koolclash_acl_mode" == 1 ]; then
+        [ "$(iptables -t nat -C koolclash -m set --match-set koolclash_white_ac_ips src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+        iptables -t nat -A koolclash -m set --match-set koolclash_white_ac_ips src -j RETURN
+    fi
+    if [ "$koolclash_acl_mode" == 2 ]; then
+        [ "$(iptables -t nat -C koolclash -m set --match-set koolclash_white_ac_macs src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+        iptables -t nat -A koolclash -m set --match-set koolclash_white_ac_macs src -j RETURN
+    fi
     if [ "$koolclash_firewall_default_port_mode" == "all" ]; then
         if [ "$koolclash_firewall_base_port_mode" == "80443" -o "$koolclash_firewall_base_port_mode" == "1" -o "$koolclash_firewall_base_port_mode" == "0" ]; then
             [ "$(iptables -t nat -C koolclash -m set --match-set koolclash_white_ports src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
@@ -425,10 +429,14 @@ apply_nat_rules() {
         [ "$(iptables -t nat -C koolclash -m set --match-set koolclash_white_ports src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
         iptables -t nat -A koolclash -m set --match-set koolclash_white_ports src -j RETURN
     fi
-    [ "$(iptables -t nat -C koolclash -m set ! --match-set koolclash_black_ac_ips src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
-    iptables -t nat -A koolclash -m set ! --match-set koolclash_black_ac_ips src -j RETURN
-    [ "$(iptables -t nat -C koolclash -m set ! --match-set koolclash_black_ac_macs src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
-    iptables -t nat -A koolclash -m set ! --match-set koolclash_black_ac_macs src -j RETURN
+    if [ "$koolclash_acl_mode" == 1 ]; then
+        [ "$(iptables -t nat -C koolclash -m set ! --match-set koolclash_black_ac_ips src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+        iptables -t nat -A koolclash -m set ! --match-set koolclash_black_ac_ips src -j RETURN
+    fi
+    if [ "$koolclash_acl_mode" == 2 ]; then
+        [ "$(iptables -t nat -C koolclash -m set ! --match-set koolclash_black_ac_macs src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+        iptables -t nat -A koolclash -m set ! --match-set koolclash_black_ac_macs src -j RETURN
+    fi
     if [ "$koolclash_firewall_default_port_mode" == "all" ]; then
         continue
     else
@@ -468,10 +476,14 @@ apply_nat_rules() {
         [ "$(iptables -t nat -C koolclash_output -m set --match-set koolclash_chn_white dst -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
         iptables -t nat -A koolclash_output -m set --match-set koolclash_chn_white dst -j RETURN
     fi
-    [ "$(iptables -t nat -C koolclash_output -m set --match-set koolclash_white_ac_ips src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
-    iptables -t nat -A koolclash_output -m set --match-set koolclash_white_ac_ips src -j RETURN
-    [ "$(iptables -t nat -C koolclash_output -m set --match-set koolclash_white_ac_macs src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
-    iptables -t nat -A koolclash_output -m set --match-set koolclash_white_ac_macs src -j RETURN
+    if [ "$koolclash_acl_mode" == 1 ]; then
+        [ "$(iptables -t nat -C koolclash_output -m set --match-set koolclash_white_ac_ips src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+        iptables -t nat -A koolclash_output -m set --match-set koolclash_white_ac_ips src -j RETURN
+    fi
+    if [ "$koolclash_acl_mode" == 2 ]; then
+        [ "$(iptables -t nat -C koolclash_output -m set --match-set koolclash_white_ac_macs src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+        iptables -t nat -A koolclash_output -m set --match-set koolclash_white_ac_macs src -j RETURN
+    fi
     if [ "$koolclash_firewall_default_port_mode" == "all" ]; then
         if [ "$koolclash_firewall_base_port_mode" == "80443" -o "$koolclash_firewall_base_port_mode" == "1" -o "$koolclash_firewall_base_port_mode" == "0" ]; then
             [ "$(iptables -t nat -C koolclash_output -m set --match-set koolclash_white_ports src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
@@ -481,10 +493,14 @@ apply_nat_rules() {
         [ "$(iptables -t nat -C koolclash_output -m set --match-set koolclash_white_ports src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
         iptables -t nat -A koolclash_output -m set --match-set koolclash_white_ports src -j RETURN
     fi
-    [ "$(iptables -t nat -C koolclash_output -m set ! --match-set koolclash_black_ac_ips src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
-    iptables -t nat -A koolclash_output -m set ! --match-set koolclash_black_ac_ips src -j RETURN
-    [ "$(iptables -t nat -C koolclash_output -m set ! --match-set koolclash_black_ac_macs src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
-    iptables -t nat -A koolclash_output -m set ! --match-set koolclash_black_ac_macs src -j RETURN
+    if [ "$koolclash_acl_mode" == 1 ]; then
+        [ "$(iptables -t nat -C koolclash_output -m set ! --match-set koolclash_black_ac_ips src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+        iptables -t nat -A koolclash_output -m set ! --match-set koolclash_black_ac_ips src -j RETURN
+    fi
+    if [ "$koolclash_acl_mode" == 2 ]; then
+        [ "$(iptables -t nat -C koolclash_output -m set ! --match-set koolclash_black_ac_macs src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+        iptables -t nat -A koolclash_output -m set ! --match-set koolclash_black_ac_macs src -j RETURN
+    fi
     if [ "$koolclash_firewall_default_port_mode" == "all" ]; then
         continue
     else
@@ -501,10 +517,14 @@ apply_nat_rules() {
         [ "$(iptables -t mangle -C koolclash -m set --match-set koolclash_chn_white dst -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
         iptables -t mangle -A koolclash -m set --match-set koolclash_chn_white dst -j RETURN
     fi
-    [ "$(iptables -t mangle -C koolclash -m set --match-set koolclash_white_ac_ips src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
-    iptables -t mangle -A koolclash -m set --match-set koolclash_white_ac_ips src -j RETURN
-    [ "$(iptables -t mangle -C koolclash -m set --match-set koolclash_white_ac_macs src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
-    iptables -t mangle -A koolclash -m set --match-set koolclash_white_ac_macs src -j RETURN
+    if [ "$koolclash_acl_mode" == 1 ]; then
+        [ "$(iptables -t mangle -C koolclash -m set --match-set koolclash_white_ac_ips src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+        iptables -t mangle -A koolclash -m set --match-set koolclash_white_ac_ips src -j RETURN
+    fi
+    if [ "$koolclash_acl_mode" == 2 ]; then
+        [ "$(iptables -t mangle -C koolclash -m set --match-set koolclash_white_ac_macs src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+        iptables -t mangle -A koolclash -m set --match-set koolclash_white_ac_macs src -j RETURN
+    fi
     if [ "$koolclash_firewall_default_port_mode" == "all" ]; then
         if [ "$koolclash_firewall_base_port_mode" == "80443" -o "$koolclash_firewall_base_port_mode" == "1" -o "$koolclash_firewall_base_port_mode" == "0" ]; then
             [ "$(iptables -t mangle -C koolclash -m set --match-set koolclash_white_ports src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
@@ -514,10 +534,14 @@ apply_nat_rules() {
         [ "$(iptables -t mangle -C koolclash -m set --match-set koolclash_white_ports src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
         iptables -t mangle -A koolclash -m set --match-set koolclash_white_ports src -j RETURN
     fi
-    [ "$(iptables -t mangle -C koolclash -m set ! --match-set koolclash_black_ac_ips src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
-    iptables -t mangle -A koolclash -m set ! --match-set koolclash_black_ac_ips src -j RETURN
-    [ "$(iptables -t mangle -C koolclash -m set ! --match-set koolclash_black_ac_macs src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
-    iptables -t mangle -A koolclash -m set ! --match-set koolclash_black_ac_macs src -j RETURN
+    if [ "$koolclash_acl_mode" == 1 ]; then
+        [ "$(iptables -t mangle -C koolclash -m set ! --match-set koolclash_black_ac_ips src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+        iptables -t mangle -A koolclash -m set ! --match-set koolclash_black_ac_ips src -j RETURN
+    fi
+    if [ "$koolclash_acl_mode" == 2 ]; then
+        [ "$(iptables -t mangle -C koolclash -m set ! --match-set koolclash_black_ac_macs src -j RETURN >/dev/null 2>&1;echo $?)" == "1" ] && \
+        iptables -t mangle -A koolclash -m set ! --match-set koolclash_black_ac_macs src -j RETURN
+    fi
     if [ "$koolclash_firewall_default_port_mode" == "all" ]; then
         continue
     else
