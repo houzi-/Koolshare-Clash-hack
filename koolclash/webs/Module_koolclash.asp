@@ -70,6 +70,11 @@
             margin-left: 8px;
         }
 
+        #koolclash-btn-submit-acl-mode {
+            margin-bottom: 5px;
+            margin-left: 8px;
+		}
+
         #koolclash-dns-msg {
             font-size: 85%;
             margin-top: 8px
@@ -639,7 +644,15 @@
                     <p style="color:red; margin-top: 8px">注意！不支持 Clash配置文件上传的更新，只支持 Clash 订阅 URL 的更新！</p>					
                     <div id="koolclash-update-sub-panel" style="margin-top: 16px"></div>
                 </div>
-            </div>			
+            </div>
+            <div class="box">
+                <div class="heading">Clash 设备控制模式</div>
+                <div class="content">
+                    <p>KoolClash 设备控制模式有 <strong>IP地址模式</strong> 和 <strong>MAC地址模式</strong> 可选择</p>
+                    <p style="color:red; margin-top: 8px">注意！选择一种模式就是这一种模式生效，不能同时两个模式生效！</p>					
+                    <div id="koolclash-acl-control-acl-panel" style="margin-top: 16px"></div>
+                </div>
+            </div>
             <div class="box">
                 <div class="heading">GeoIP 数据库</div>
                 <div class="content">
@@ -1207,7 +1220,20 @@
 						{ name: 'koolclash-select-update-sub-time',type: 'select', options:option_time_hour, value: window.dbus.koolclash_update_sub_time || '3' , },
 						{ suffix: '<button type="button" id="koolclash-btn-submit-update-sub" onclick="KoolClash.submitUpdateSub();" class="btn btn-primary">提交</button>', }
                     ]},
-                ]);				
+                ]);
+                $('#koolclash-acl-control-acl-panel').forms([
+                    {
+                        title: 'Clash 设备控制模式选择',
+                        name: 'koolclash-select-acl-mode',
+                        type: 'select',
+                        options: [
+                            ['1', 'IP地址模式'],
+                            ['2', 'MAC地址模式']
+                        ],
+                        suffix: '<span> &nbsp;&nbsp;</span><button type="button" id="koolclash-btn-submit-acl-mode" onclick="KoolClash.submitACLMode();" class="btn btn-primary">提交</button>',
+                        value: window.dbus.koolclash_acl_mode || '1',
+                    },
+                ]);
                 $('#koolclash-ipdb-panel').forms([
                     {
                         title: '<b>当前 IP 数据库版本</b>',
@@ -1221,8 +1247,7 @@
                         name: 'koolclash-chn-version',
                         text: `${window.dbus.koolclash_chn_version || '没有获取到版本信息'}<button type="button" id="koolclash-btn-update-chn" onclick="KoolClash.updateCHN()" class="btn btn-success" style="margin-left: 16px; margin-top: -6px; ">更新 CHN 数据库</button>`,
                     },
-                ]);				
-
+                ]);
                 if (E('_koolclash-select-update-sub').value === '0') {
                     $('#_koolclash-select-update-sub-time').hide();
                 } else if (E('_koolclash-select-update-sub').value === '1') {
@@ -2500,7 +2525,41 @@ ${Base64.decode(data.firewall_ipset_list)}
                         }, 2500)
                     }
                 });
-            },	
+            },
+            submitACLMode: () => {
+                KoolClash.disableAllButton();
+                E('koolclash-btn-submit-acl-mode').innerHTML = `正在提交`;
+
+                let id = parseInt(Math.random() * 100000000),
+                    postData = JSON.stringify({
+                        id,
+                        "method": "koolclash_acl_mode.sh",
+                        "params": [`${E('_koolclash-select-acl-mode').value}`],
+                        "fields": ""
+                    });
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/_api/",
+                    data: postData,
+                    dataType: "json",
+                    success: (resp) => {
+                        E('koolclash-btn-submit-acl-mode').innerHTML = `提交成功，下次启动 Clash 时生效！`;
+                        setTimeout(() => {
+                            KoolClash.enableAllButton();
+                            E('koolclash-btn-submit-acl-mode').innerHTML = '提交';
+                        }, 2500)
+                    },
+                    error: () => {
+                        E('koolclash-btn-submit-acl-mode').innerHTML = `提交失败，请重试！`;
+                        setTimeout(() => {
+                            KoolClash.enableAllButton();
+                            E('koolclash-btn-submit-acl-mode').innerHTML = '提交';
+                        }, 2500)
+                    }
+                });
+            },
             submitUpdateSub: () => {
                 KoolClash.disableAllButton();
                 E('koolclash-btn-submit-update-sub').innerHTML = `正在提交`;
@@ -2534,7 +2593,7 @@ ${Base64.decode(data.firewall_ipset_list)}
                         }, 2500)
                     }
                 });
-            },			
+            },
             load: (cb) => {
                 window.dbus = {}
                 document.title = 'KoolClash - Clash for Koolshare OpenWrt/LEDE';
