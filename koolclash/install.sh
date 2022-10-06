@@ -109,6 +109,7 @@ dbus set koolclash_return_chnip=0
 dbus set koolclash_acl_list="undefined"
 dbus set koolclash_firewall_default_mode=1
 dbus set koolclash_firewall_default_port_mode="all"
+dbus set koolclash_acl_mode=1
 #echo_date "KoolClash: 设置代理模式为 规则模式..."
 #dbus set koolclash_switch_config_mode=1
 #echo_date "KoolClash: 设置运行模式为 Fake-IP（增强）..."
