@@ -1,10 +1,10 @@
 {
 "module":"koolclash",
-"version":"0.18.2",
-"md5":"88a60ba206441582f6a5179d78b7772f",
+"version":"0.18.3",
+"md5":"249114a5c92137befa35d32b01908d75",
 "home_url":"Module_koolclash.asp",
 "title":"koolclash",
 "description":"基于规则的代理程序 Clash",
-"changelog":"更新修复",
-"build_date":"2022-10-05_21:54:31"
+"changelog":"BUG修复",
+"build_date":"2022-12-31_11:30:53"
 }
