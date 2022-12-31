@@ -68,7 +68,7 @@ sub_url_update () {
     dbus set koolclash_update_mode=2
     start_stop_subconverter
     sleep 3s
-    subconverter_links="http://127.0.0.1:25500/sub?target=clash&new_name=true&url=$koolclash_sub_link&insert=false&config=ruleconfig%2FZHANG.ini&include=&exclude=&append_type=false&emoji=true&udp=false&fdn=true&sort=true&scv=false&tfo=false"
+    subconverter_links="http://127.0.0.1:25500/sub?target=clash&new_name=true&url=$koolclash_sub_link&insert=false&config=ruleconfig%2FZHANG.ini&include=&exclude=&append_type=false&emoji=true&udp=false&fdn=true&sort=true&scv=false&tfo=false&expand=true"
     UA='Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36'
     $curl -4sSk --user-agent "$UA" --connect-timeout 30 "$subconverter_links" > $KSROOT/koolclash/config/origin.yml
     if [ "$?" == "0" ]; then
