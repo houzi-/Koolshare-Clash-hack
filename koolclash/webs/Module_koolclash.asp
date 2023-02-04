@@ -470,7 +470,8 @@
                         <div style="width: 61.8%">
                             <p><span class="ip-title">IPIP&nbsp;&nbsp;国内</span>:&nbsp;<span id="ip-ipipnet"></span></p>
                             <!--<p><span class="ip-title">搜狐&nbsp;&nbsp;国内</span>:&nbsp;<span id="ip-sohu"></span>&nbsp;<span id="ip-sohu-ipip"></span></p>-->
-							<span class="ip-title"></span><span id="ip-sohu"></span>&nbsp;<span id="ip-sohu-ipip"></span></p>
+							<!--<span class="ip-title"></span><span id="ip-sohu"></span>&nbsp;<span id="ip-sohu-ipip"></span></p>-->
+                            <p><span class="ip-title">本机&nbsp;IP</span>:&nbsp;<span id="ip-webrtc"></span>&nbsp;<span id="ip-webrtc-cz88"></span></p>
                             <!-- <p><span class="ip-title">IP.SB&nbsp;海外</span>:&nbsp;<span id="ip-ipsb"></span>&nbsp;<span id="ip-ipsb-geo"></span></p> -->
                             <p><span class="ip-title">IPAPI&nbsp;海外</span>:&nbsp;<span id="ip-ipapi"></span>&nbsp;<span id="ip-ipapi-geo"></span></p>
                         </div>
@@ -720,6 +721,24 @@
 					.then(resp => E('ip-ipipnet').innerHTML = resp.data.full_ip + ' ' + resp.data.city + ' ' + resp.data.distinct + ' ' + resp.data.net_str);
                     //.then(resp => E('ip-ipipnet').innerHTML = resp.data.replace('当前 IP：', '').replace('来自于：', ''));
             },
+            getWebrtcIP: () => {
+                window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+                        let pc = new RTCPeerConnection({ iceServers: [] }),
+                noop = () => { };
+
+                pc.createDataChannel('');
+                pc.createOffer(pc.setLocalDescription.bind(pc), noop);
+                pc.onicecandidate = (ice) => {
+                if (!ice || !ice.candidate || !ice.candidate.candidate) {
+                        E('ip-webrtc').innerHTML = '没有查询到 IP';
+                return;
+            }
+                let ip = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(ice.candidate.candidate)[1];
+                E('ip-webrtc').innerHTML = ip;
+                IP.parseIPIpip(ip, 'ip-webrtc-cz88');
+                pc.onicecandidate = noop;
+                };
+           },
             //getSohuIP: (data) => {
                 //E('ip-sohu').innerHTML = returnCitySN.cip;
                 //IP.parseIPIpip(returnCitySN.cip, 'ip-sohu-ipip');
@@ -1432,6 +1451,7 @@ dns:
             },
             checkIP: () => {
                 IP.getIpipnetIP();
+                IP.getWebrtcIP();
                 //IP.getSohuIP();
                 IP.getIpApiIP();
                 HTTP.runcheck();
