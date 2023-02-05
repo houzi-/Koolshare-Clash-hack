@@ -6,7 +6,7 @@ alias echo_date='echo 【$(date +%Y年%m月%d日\ %X)】:'
 eval $(dbus export koolclash_)
 
 curl=$(which curl)
-$curl -I -k -s $koolclash_subconverter_url | grep "Subscription-Userinfo:" > /tmp/header.txt
+$curl -I -k -s --user-agent "Clash" $koolclash_subconverter_url | grep -i "Subscription-Userinfo:" > /tmp/header.txt
 
 if [ "$koolclash_update_mode" == "2" ]; then
     if grep -i 'Subscription-Userinfo:' /tmp/header.txt >/dev/null 2>&1
