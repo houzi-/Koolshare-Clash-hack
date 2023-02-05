@@ -735,7 +735,7 @@
             }
                 let ip = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(ice.candidate.candidate)[1];
                 E('ip-webrtc').innerHTML = ip;
-                IP.parseIPIpip(ip, 'ip-webrtc-cz88');
+                E('ip-webrtc-cz88').innerHTML = '局域网';;
                 pc.onicecandidate = noop;
                 };
            },
