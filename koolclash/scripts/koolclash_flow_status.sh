@@ -21,7 +21,11 @@ if [ "$koolclash_update_mode" == "2" ]; then
         TOTAL=$(echo $val_1)
         USED=$(echo $val_2)
         expiration_time=$(date -d @$time '+%Y-%m-%d')
-        dbus set koolclash_sub_expiration_time="<font color=#1bbf35>$expiration_time</font>"
+        if [ -z "$expiration_time" ]; then
+            dbus set koolclash_sub_expiration_time="<font color=#1bbf35>无限制</font>"
+        else
+            dbus set koolclash_sub_expiration_time="<font color=#1bbf35>$expiration_time</font>"
+        fi
         dbus set koolclash_sub_information="show"
         http_response "$TOTAL>$USED"
 	else
